@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ncm.hrms.dto.common.DocumentDto;
 import com.ncm.hrms.entity.Document;
 import com.ncm.hrms.entity.Employee;
+import com.ncm.hrms.enums.ContentType;
 import com.ncm.hrms.repository.DocumentRepository;
 import com.ncm.hrms.repository.EmployeeRepository;
 
@@ -101,7 +102,7 @@ public class DocumentService {
         Document doc = new Document();
         doc.setDocName(docDto.getDocName());
         doc.setDocType(docDto.getDocType());
-        doc.setContentType(docDto.getContentType());
+        doc.setContentType(ContentType.valueOf(docDto.getContentType()));
 
         return doc;
     }
@@ -114,7 +115,7 @@ public class DocumentService {
         dto.setId(doc.getId());
         dto.setDocName(doc.getDocName());
         dto.setDocType(doc.getDocType());
-        dto.setContentType(doc.getContentType());
+        dto.setContentType(doc.getContentType().toString());
         dto.setPath(doc.getPath());
 
         if (doc.getEmployee() != null) {

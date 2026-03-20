@@ -2,6 +2,8 @@ package com.ncm.hrms.entity;
 
 import java.sql.Timestamp;
 
+import com.ncm.hrms.enums.ContentType;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,14 +34,14 @@ public class Document {
 	private Timestamp uploadTime;
 	
 	@Enumerated(EnumType.STRING)
-	private String contentType;
+	private ContentType contentType;
 
 	public Document() {
 		super();
 	}
 
 	public Document(Employee employee, String docName, String path, String docType, Timestamp uploadTime,
-			String contentType) {
+			ContentType contentType) {
 		super();
 		this.employee = employee;
 		this.docName = docName;
@@ -97,11 +99,11 @@ public class Document {
 		this.uploadTime = uploadTime;
 	}
 
-	public String getContentType() {
+	public ContentType getContentType() {
 		return contentType;
 	}
 
-	public void setContentType(String contentType) {
+	public void setContentType(ContentType contentType) {
 		this.contentType = contentType;
 	}
  

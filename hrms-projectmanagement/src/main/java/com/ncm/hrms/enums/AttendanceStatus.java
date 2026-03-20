@@ -7,6 +7,8 @@ public enum AttendanceStatus {
     LATE,
     HALF_DAY,
     ON_LEAVE,
+    UPCOMING,
+    PENDING
      
 
 }

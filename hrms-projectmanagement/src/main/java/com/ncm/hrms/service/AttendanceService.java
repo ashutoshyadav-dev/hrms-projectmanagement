@@ -4,7 +4,10 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -46,10 +49,8 @@ public class AttendanceService {
 
     
 
-    public AttendanceResponse logAttendance(
-            AttendanceRequest requestDto,
-            HttpServletRequest request) {
-
+    public AttendanceResponse logAttendance( AttendanceRequest requestDto,HttpServletRequest request) {
+    	
         Employee employee = getEmployee(requestDto.getEmployeeId());
 
         validateEmployeeStatus(employee);
@@ -266,19 +267,82 @@ public class AttendanceService {
     }
 
 
+    
+    //=========================================================================================================================
+    
+    public List<AttendanceResponse> getAttendanceByEmployeeId( Long empId, LocalDate start, LocalDate end) {
+        Employee emp = empRepo.findById(empId)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-    private AttendanceResponse buildResponse(
-            Employee employee,
-            Attendance attendance) {
+        
+        LocalDate hireDate = emp.getHireDate();
+        if (start.isBefore(hireDate)) {
+            start = hireDate;
+        }
+        
+        LocalDateTime starts = start.atStartOfDay();
+	    LocalDateTime ends = end.plusDays(1).atStartOfDay();
+        
+        List<Attendance> attendanceList =
+                attendanceRepo.findAllAttendanceByEmployeeIdAndRange(empId, starts, ends);
+
+        
+        Map<LocalDate, Attendance> attendanceMap = new HashMap<>();
+        for (Attendance a : attendanceList) {
+            attendanceMap.put(a.getDate(), a);
+        }
+
+        List<AttendanceResponse> resList = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+
+       
+        for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+
+            if (attendanceMap.containsKey(date)) {
+               
+                resList.add(buildResponse(emp, attendanceMap.get(date)));
+
+            } else {
+                
+                AttendanceResponse res = new AttendanceResponse();
+
+                res.setEmployeeId(emp.getId());
+                res.setEmployeeName(emp.getName());
+                res.setDate(date);
+
+                if (date.isAfter(today)) {
+                    res.setStatus(AttendanceStatus.UPCOMING);  
+
+                } else if (date.isEqual(today)) {
+                    res.setStatus(AttendanceStatus.PENDING);   
+
+                } else {
+                    res.setStatus(AttendanceStatus.ABSENT);    
+                }
+
+                resList.add(res);
+            }
+        }
+
+        return resList;
+    }
+    
+    //=======================================================================================================================================
+    
+                           
+    
+
+    private AttendanceResponse buildResponse( Employee employee,Attendance attendance) {
 
         AttendanceResponse response = new AttendanceResponse();
-
         response.setEmployeeId(employee.getId());
         response.setEmployeeName(employee.getName());
         response.setDate(attendance.getDate());
         response.setCheckIn(attendance.getCheckInTime());
         response.setCheckOut(attendance.getCheckOutTime());
-
+        response.setStatus(attendance.getStatus());
         return response;
     }
+    
+    
 }
