@@ -164,21 +164,6 @@ public class AttendanceService {
         attendance.setEmployee(employee);
         attendance.setDate(today);
 
-//        LocalDateTime firstCheckIn = logs.stream()
-//                .filter(l -> l.getType() == LogType.CHECK_IN)
-//                .map(AttendanceLog::getTimestamp)
-//                .min(LocalDateTime::compareTo)
-//                .orElse(null);
-//
-//        LocalDateTime lastCheckOut = logs.stream()
-//                .filter(l -> l.getType() == LogType.CHECK_OUT)
-//                .map(AttendanceLog::getTimestamp)
-//                .max(LocalDateTime::compareTo)
-//                .orElse(null);
-//
-//        attendance.setCheckInTime(firstCheckIn);
-//        attendance.setCheckOutTime(lastCheckOut);
-//          
         
         AttendanceLog firstCheckInLog = logs.stream()
                 .filter(l -> l.getType() == LogType.CHECK_IN)
@@ -215,37 +200,54 @@ public class AttendanceService {
        
         LocalTime checkInTime = attendance.getCheckInTime().toLocalTime();
 
-        LocalTime startReference = Boolean.TRUE.equals(shift.getFlexible())
-                ? shift.getFlexibleStartLimit()
-                : shift.getStartTime();
+//        LocalTime startReference = Boolean.TRUE.equals(shift.getFlexible())
+//                ? shift.getFlexibleStartLimit()
+//                : shift.getStartTime();
+//
+//        if (checkInTime.isAfter(startReference) && 
+//                (Boolean.TRUE.equals(shift.getFlexible())
+//                    ? Duration.between(shift.getFlexibleStartLimit(), checkInTime)
+//                    : Duration.between(shift.getStartTime(), checkInTime)
+//                ).compareTo(Duration.ofHours(2)) > 0) {
+//
+//            attendance.setStatus(AttendanceStatus.HALF_DAY);
+//            attendance.setLate(true);
+//
+//        }
+//        else if (checkInTime.isAfter(
+//                Boolean.TRUE.equals(shift.getFlexible())
+//                        ? shift.getFlexibleStartLimit()
+//                        : shift.getStartTime()
+//        )) {
+//
+//            attendance.setStatus(AttendanceStatus.LATE);
+//            attendance.setLate(true);
+//
+//        }
+//        else {
+//
+//            attendance.setStatus(AttendanceStatus.PRESENT);
+//            attendance.setLate(false);
+//        }
+//        
+        LocalTime ref = Boolean.TRUE.equals(shift.getFlexible())
+        	    ? shift.getFlexibleStartLimit()
+        	    : shift.getStartTime();
 
-        if (checkInTime.isAfter(startReference) && 
-                (Boolean.TRUE.equals(shift.getFlexible())
-                    ? Duration.between(shift.getFlexibleStartLimit(), checkInTime)
-                    : Duration.between(shift.getStartTime(), checkInTime)
-                ).compareTo(Duration.ofHours(2)) > 0) {
+        	Duration lateDuration = checkInTime.isAfter(ref)
+        	    ? Duration.between(ref, checkInTime)
+        	    : Duration.ZERO;
 
-            attendance.setStatus(AttendanceStatus.HALF_DAY);
-            attendance.setLate(true);
-
-        }
-        else if (checkInTime.isAfter(
-                Boolean.TRUE.equals(shift.getFlexible())
-                        ? shift.getFlexibleStartLimit()
-                        : shift.getStartTime()
-        )) {
-
-            attendance.setStatus(AttendanceStatus.LATE);
-            attendance.setLate(true);
-
-        }
-        else {
-
-            attendance.setStatus(AttendanceStatus.PRESENT);
-            attendance.setLate(false);
-        }
-        
-        
+        	if (lateDuration.compareTo(Duration.ofHours(2)) > 0) {
+        	    attendance.setStatus(AttendanceStatus.HALF_DAY);
+        	    attendance.setLate(true);
+        	} else if (lateDuration.compareTo(Duration.ZERO) > 0) {
+        	    attendance.setStatus(AttendanceStatus.LATE);
+        	    attendance.setLate(true);
+        	} else {
+        	    attendance.setStatus(AttendanceStatus.PRESENT);
+        	    attendance.setLate(false);
+        	}
         if (firstCheckIn != null && lastCheckOut != null) {
 
             Duration workingHours = Duration.between(firstCheckIn, lastCheckOut);

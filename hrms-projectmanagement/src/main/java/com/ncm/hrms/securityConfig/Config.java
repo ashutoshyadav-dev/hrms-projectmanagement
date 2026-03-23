@@ -53,7 +53,7 @@ public class Config {
                     .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN")
                 .requestMatchers("/assignProjectToEmp/byEmail")
                     .hasAuthority("ROLE_EMPLOYEE")
-                .requestMatchers("/api/attendance/log")
+                .requestMatchers("/api/attendance/**")
                    .hasAuthority("ROLE_EMPLOYEE")
                 .requestMatchers("/api/shifts","/api/shifts/**")
                    .hasAuthority("ROLE_ADMIN")
