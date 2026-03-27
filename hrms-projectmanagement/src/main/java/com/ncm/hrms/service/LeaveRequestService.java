@@ -74,9 +74,7 @@ public class LeaveRequestService {
                 );
 
         if (leaveReq != null && leaveReq.getLeaveStatus() != LeaveStatus.REJECTED) {
-            throw new IllegalArgumentException(
-                    "You cannot apply more than one leave in a day"
-            );
+            throw new IllegalArgumentException( "You cannot apply more than one leave in a day");
         }
 
         long days = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate()) + 1;
