@@ -3,6 +3,7 @@ package com.ncm.hrms.dto.response;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.ncm.hrms.dto.common.ShiftDto;
 import com.ncm.hrms.enums.AttendanceStatus;
 
 public class AttendanceResponse {
@@ -12,6 +13,8 @@ public class AttendanceResponse {
     private String employeeName;
 
     private LocalDate date;
+    
+  private ShiftDto shift;
 
     private LocalDateTime checkIn;
 
@@ -88,6 +91,17 @@ public class AttendanceResponse {
 	public void setWorkingHours(String workingHours) {
 		this.workingHours = workingHours;
 	}
+
+	public ShiftDto getShift() {
+		return shift;
+	}
+
+	public void setShift(ShiftDto shift) {
+		this.shift = shift;
+	}
+
+	
+	
     
     
 

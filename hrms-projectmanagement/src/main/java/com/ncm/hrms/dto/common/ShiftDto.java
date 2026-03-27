@@ -1,6 +1,6 @@
 package com.ncm.hrms.dto.common;
 
-import java.time.Duration;
+
 import java.time.LocalTime;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ShiftDto {
 	    private LocalTime flexibleStartLimit;
 
 
-	    private Duration requiredWorkHours;
+	    private Long requiredWorkHours;
 
 	    private Boolean flexible;
 	    
@@ -56,12 +56,7 @@ public class ShiftDto {
 		public void setFlexibleStartLimit(LocalTime flexibleStartLimit) {
 			this.flexibleStartLimit = flexibleStartLimit;
 		}
-		public Duration getRequiredWorkHours() {
-			return requiredWorkHours;
-		}
-		public void setRequiredWorkHours(Duration requiredWorkHours) {
-			this.requiredWorkHours = requiredWorkHours;
-		}
+		
 		public Boolean getFlexible() {
 			return flexible;
 		}
@@ -73,6 +68,12 @@ public class ShiftDto {
 		}
 		public void setEmployees(List<Employee> employees) {
 			this.employees = employees;
+		}
+		public Long getRequiredWorkHours() {
+			return requiredWorkHours;
+		}
+		public void setRequiredWorkHours(Long requiredWorkHours) {
+			this.requiredWorkHours = requiredWorkHours;
 		}
 	    
 	    

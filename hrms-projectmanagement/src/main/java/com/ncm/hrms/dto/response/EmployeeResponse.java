@@ -10,6 +10,7 @@ import com.ncm.hrms.entity.Address;
 import com.ncm.hrms.entity.EmployeeAssignment;
 import com.ncm.hrms.entity.LeaveRequest;
 import com.ncm.hrms.entity.Modules;
+import com.ncm.hrms.enums.EmpRole;
 import com.ncm.hrms.enums.EmpStatus;
 
 public class EmployeeResponse {
@@ -19,6 +20,7 @@ public class EmployeeResponse {
     private String email;
     private String phoneNumber;
     private String education;
+    private EmpRole role;
 
     private DesignationResponse designation;
 
@@ -175,8 +177,16 @@ public class EmployeeResponse {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public EmpRole getRole() {
+		return role;
+	}
+
+	public void setRole(EmpRole role) {
+		this.role = role;
+	}
 
 
+    
 	
     
     

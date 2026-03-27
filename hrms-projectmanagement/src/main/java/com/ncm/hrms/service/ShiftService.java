@@ -1,5 +1,6 @@
 package com.ncm.hrms.service;
 
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class ShiftService {
         shift.setStartTime(shiftDto.getStartTime());
         shift.setEndTime(shiftDto.getEndTime());
         shift.setFlexibleStartLimit(shiftDto.getFlexibleStartLimit());
-        shift.setRequiredWorkHours(shiftDto.getRequiredWorkHours());
+        shift.setRequiredWorkHours( shiftDto.getRequiredWorkHours());
         shift.setFlexible(shiftDto.getFlexible());
 
         Shift updatedShift = shiftRepo.save(shift);
@@ -107,6 +108,8 @@ public class ShiftService {
         employeeRepo.save(employee);
     }
 
+    
+    
  
 
     private ShiftDto mapToDto(Shift shift) {

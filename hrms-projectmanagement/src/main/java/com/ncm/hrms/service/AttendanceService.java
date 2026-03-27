@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.ncm.hrms.dto.common.ShiftDto;
 import com.ncm.hrms.dto.request.AttendanceRequest;
 import com.ncm.hrms.dto.response.AttendanceResponse;
 import com.ncm.hrms.entity.Attendance;
@@ -253,14 +254,17 @@ public class AttendanceService {
             Duration workingHours = Duration.between(firstCheckIn, lastCheckOut);
             attendance.setWorkingHours(workingHours);
  
-            if (shift.getRequiredWorkHours() != null &&
-            	    workingHours.compareTo(shift.getRequiredWorkHours()) < 0) {
+            if (shift.getRequiredWorkHours() != null && workingHours != null) {
 
-            	    attendance.setEarlyExit(true);
-            	}
-            	else{
-            	    attendance.setEarlyExit(false);
-            	}
+                long workedHours = workingHours.toHours();
+
+                if (workedHours < shift.getRequiredWorkHours()) {
+                    attendance.setEarlyExit(true);
+                } else {
+                    attendance.setEarlyExit(false);
+                }
+            }
+            
         }
         
         
@@ -281,12 +285,10 @@ public class AttendanceService {
         if (start.isBefore(hireDate)) {
             start = hireDate;
         }
-        
-        LocalDateTime starts = start.atStartOfDay();
-	    LocalDateTime ends = end.plusDays(1).atStartOfDay();
+       
         
         List<Attendance> attendanceList =
-                attendanceRepo.findAllAttendanceByEmployeeIdAndRange(empId, starts, ends);
+                attendanceRepo.findAllAttendanceByEmployeeIdAndRange(empId, start, end);
 
         
         Map<LocalDate, Attendance> attendanceMap = new HashMap<>();
@@ -311,6 +313,7 @@ public class AttendanceService {
                 res.setEmployeeId(emp.getId());
                 res.setEmployeeName(emp.getName());
                 res.setDate(date);
+                res.setShift(mapToShiftDto(emp.getShift()));
 
                 if (date.isAfter(today)) {
                     res.setStatus(AttendanceStatus.UPCOMING);  
@@ -343,8 +346,28 @@ public class AttendanceService {
         response.setCheckIn(attendance.getCheckInTime());
         response.setCheckOut(attendance.getCheckOutTime());
         response.setStatus(attendance.getStatus());
+        response.setShift(mapToShiftDto(employee.getShift()));
+
         return response;
     }
     
-    
+    private ShiftDto mapToShiftDto(Shift shift) {
+
+        if (shift == null) return null;
+
+        ShiftDto dto = new ShiftDto();
+        dto.setId(shift.getId());
+        dto.setName(shift.getName());
+        dto.setStartTime(shift.getStartTime());
+        dto.setEndTime(shift.getEndTime());
+        dto.setFlexibleStartLimit(shift.getFlexibleStartLimit());
+        dto.setRequiredWorkHours(
+            shift.getRequiredWorkHours() != null
+                ? shift.getRequiredWorkHours()
+                : null
+        );
+        dto.setFlexible(shift.getFlexible());
+
+        return dto;
+    }
 }

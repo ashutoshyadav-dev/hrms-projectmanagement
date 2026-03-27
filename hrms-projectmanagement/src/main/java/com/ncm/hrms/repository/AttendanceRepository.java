@@ -1,7 +1,6 @@
 package com.ncm.hrms.repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
 	
 	@Query("SELECT a FROM Attendance a WHERE a.employee.id = ?1 AND a.date BETWEEN ?2 AND ?3")
-	List<Attendance> findAllAttendanceByEmployeeIdAndRange(Long empId, LocalDateTime start, LocalDateTime end);
+	List<Attendance> findAllAttendanceByEmployeeIdAndRange(Long empId, LocalDate start, LocalDate end);
 
 	
 

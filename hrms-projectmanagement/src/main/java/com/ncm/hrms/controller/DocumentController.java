@@ -5,6 +5,7 @@ package com.ncm.hrms.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,8 +43,25 @@ public class DocumentController {
         return ResponseEntity.ok(documentService.getDocumentById(id));
     }
 
+    @GetMapping("/emp/{employeeId}")
+    public ResponseEntity<List<DocumentDto>> getDocumentsByEmployeeId(@PathVariable Long employeeId) {
+        List<DocumentDto> docs = documentService.getDocumentsByEmployeeId(employeeId);
+        return ResponseEntity.ok(docs);
+    }
+    
     
 
+    @GetMapping("/view/{id}")
+    public ResponseEntity<Resource> viewDocument(@PathVariable Long id) throws IOException {
+        return documentService.getFile(id, false);
+    }
+
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> downloadDocument(@PathVariable Long id) throws IOException {
+        return documentService.getFile(id, true);
+    }
+    
     @GetMapping
     public ResponseEntity<List<DocumentDto>> getAllDocuments() {
 

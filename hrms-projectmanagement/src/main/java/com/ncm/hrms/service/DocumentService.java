@@ -9,6 +9,11 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -73,7 +78,17 @@ public class DocumentService {
     }
 
     
+  
+    public List<DocumentDto> getDocumentsByEmployeeId(Long employeeId) {
 
+        List<Document> docs = docRepo.findByEmployeeId(employeeId);
+
+        return docs.stream()
+                   .map(this::docToDTO)
+                   .toList();
+    }
+    
+    
     public List<DocumentDto> getAllDocuments() {
 
         return docRepo.findAll()
@@ -96,6 +111,33 @@ public class DocumentService {
         docRepo.deleteById(id);
     }
 
+    public ResponseEntity<Resource> getFile(Long id, boolean download) throws IOException {
+
+        Document doc = docRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+
+        Path path = Paths.get(doc.getPath());
+
+        if (!Files.exists(path)) {
+            throw new RuntimeException("File not found on server");
+        }
+
+        Resource resource = new UrlResource(path.toUri());
+
+        String contentType = Files.probeContentType(path);
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        String headerValue = download
+                ? "attachment; filename=\"" + doc.getDocName() + "\""
+                : "inline; filename=\"" + doc.getDocName() + "\"";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                .body(resource);
+    }
    
     public Document dtoToDoc(DocumentDto docDto) {
 

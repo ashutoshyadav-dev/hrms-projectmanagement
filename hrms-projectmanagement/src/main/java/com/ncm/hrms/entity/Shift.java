@@ -1,7 +1,6 @@
 package com.ncm.hrms.entity;
 
 import jakarta.persistence.*;
-import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class Shift {
     private LocalTime flexibleStartLimit;
 
 
-    private Duration requiredWorkHours;
+    private Long requiredWorkHours;
 
     private Boolean flexible;
 
@@ -89,14 +88,23 @@ public class Shift {
 	}
 
 
-	public Duration getRequiredWorkHours() {
+	
+
+
+	public Long getRequiredWorkHours() {
 		return requiredWorkHours;
 	}
 
 
-	public void setRequiredWorkHours(Duration requiredWorkHours) {
+
+
+
+	public void setRequiredWorkHours(Long requiredWorkHours) {
 		this.requiredWorkHours = requiredWorkHours;
 	}
+
+
+
 
 
 	public Boolean getFlexible() {

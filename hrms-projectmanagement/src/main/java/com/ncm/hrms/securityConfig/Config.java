@@ -57,6 +57,8 @@ public class Config {
                    .hasAuthority("ROLE_EMPLOYEE")
                 .requestMatchers("/api/shifts","/api/shifts/**")
                    .hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/documents/**")
+                   .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN")
                 .anyRequest().authenticated()
             );
     	
