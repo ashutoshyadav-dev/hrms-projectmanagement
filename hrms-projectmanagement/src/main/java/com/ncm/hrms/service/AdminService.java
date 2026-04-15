@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.ncm.hrms.dto.common.AddressDto;
 import com.ncm.hrms.dto.common.EmployeeDropdownDto;
+import com.ncm.hrms.dto.common.ShiftDto;
 import com.ncm.hrms.dto.request.EmployeeRequest;
 import com.ncm.hrms.dto.response.DesignationResponse;
 import com.ncm.hrms.dto.response.EmployeeResponse;
@@ -138,6 +139,18 @@ public class AdminService {
 			dr.setId(employee.getDesignation().getId());
 			dr.setTitle(employee.getDesignation().getTitle());
 			response.setDesignation(dr);
+		}
+		
+		if(employee.getShift() != null) {
+			ShiftDto sd =new ShiftDto();
+			sd.setId(employee.getShift().getId());
+			sd.setEndTime(employee.getShift().getEndTime());
+			sd.setFlexible(employee.getShift().getFlexible());
+			sd.setFlexibleStartLimit(employee.getShift().getFlexibleStartLimit());
+			sd.setName(employee.getShift().getName());
+			sd.setRequiredWorkHours(employee.getShift().getRequiredWorkHours());
+			sd.setStartTime(employee.getShift().getStartTime());
+			response.setShift(sd);
 		}
 
 		response.setTechnologies(employee.getTechnologies() == null ? Collections.emptyList()

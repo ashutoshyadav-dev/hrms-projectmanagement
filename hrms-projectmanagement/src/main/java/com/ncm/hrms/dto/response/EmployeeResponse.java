@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.ncm.hrms.dto.common.ShiftDto;
 import com.ncm.hrms.entity.Address;
 import com.ncm.hrms.entity.EmployeeAssignment;
 import com.ncm.hrms.entity.LeaveRequest;
@@ -21,6 +22,7 @@ public class EmployeeResponse {
 	private EmpRole role;
 
 	private DesignationResponse designation;
+	private ShiftDto shift;
 
 	private LocalDate hireDate;
 	private LocalDate dateOfBirth;
@@ -182,5 +184,14 @@ public class EmployeeResponse {
 	public void setRole(EmpRole role) {
 		this.role = role;
 	}
+
+	public ShiftDto getShift() {
+		return shift;
+	}
+
+	public void setShift(ShiftDto shift) {
+		this.shift = shift;
+	}
+	
 
 }
