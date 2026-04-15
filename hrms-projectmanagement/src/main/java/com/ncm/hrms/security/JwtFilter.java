@@ -15,39 +15,31 @@ import java.util.List;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+	@Autowired
+	private JwtUtil jwtUtil;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        String header = request.getHeader("Authorization");
+		String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
+		if (header != null && header.startsWith("Bearer ")) {
 
-            String token = header.substring(7);
-            
+			String token = header.substring(7);
 
-            if (jwtUtil.validateToken(token)) {
+			if (jwtUtil.validateToken(token)) {
 
-                String email = jwtUtil.extractEmail(token);
-                String role = jwtUtil.extractRole(token);
-                
-                
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(
-                                email,
-                                null,
-                                List.of(new SimpleGrantedAuthority(role))
-                        );
+				String email = jwtUtil.extractEmail(token);
+				String role = jwtUtil.extractRole(token);
 
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
-        }
+				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, null,
+						List.of(new SimpleGrantedAuthority(role)));
 
-        filterChain.doFilter(request, response);
-    }
+				SecurityContextHolder.getContext().setAuthentication(auth);
+			}
+		}
+
+		filterChain.doFilter(request, response);
+	}
 }

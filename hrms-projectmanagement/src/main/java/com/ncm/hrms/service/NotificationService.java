@@ -11,16 +11,16 @@ import com.ncm.hrms.repository.NotificationRepository;
 @Service
 public class NotificationService {
 
-    @Autowired
-    private NotificationRepository repo;
+	@Autowired
+	private NotificationRepository repo;
 
-    public void createNotification(Long userId, String message) {
-        Notification n = new Notification();
-        n.setUserId(userId);
-        n.setMessage(message);
-        n.setRead(false);
-        n.setCreatedAt(LocalDateTime.now());
+	public void createNotification(Long userId, String message) {
+		Notification n = new Notification();
+		n.setUserId(userId);
+		n.setMessage(message);
+		n.setRead(false);
+		n.setCreatedAt(LocalDateTime.now());
 
-        repo.save(n);
-    }
+		repo.save(n);
+	}
 }

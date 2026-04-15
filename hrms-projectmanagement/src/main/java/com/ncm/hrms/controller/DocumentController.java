@@ -1,7 +1,5 @@
 package com.ncm.hrms.controller;
 
-
-
 import java.io.IOException;
 import java.util.List;
 
@@ -17,64 +15,54 @@ import com.ncm.hrms.service.DocumentService;
 @RequestMapping("/api/documents")
 public class DocumentController {
 
-    private DocumentService documentService;
+	private DocumentService documentService;
 
-    public DocumentController(DocumentService documentService) {
-        this.documentService = documentService;
-    }
+	public DocumentController(DocumentService documentService) {
+		this.documentService = documentService;
+	}
 
-    
+	@PostMapping("/upload")
+	public ResponseEntity<DocumentDto> uploadDocument(@RequestPart("docDto") DocumentDto docDto,
+			@RequestPart("file") MultipartFile file) throws IOException {
 
-    @PostMapping("/upload")
-    public ResponseEntity<DocumentDto> uploadDocument(
-            @RequestPart("docDto") DocumentDto docDto,
-            @RequestPart("file") MultipartFile file) throws IOException {
+		DocumentDto savedDoc = documentService.uploadFile(docDto, file);
 
-        DocumentDto savedDoc = documentService.uploadFile(docDto, file);
+		return ResponseEntity.ok(savedDoc);
+	}
 
-        return ResponseEntity.ok(savedDoc);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<DocumentDto> getDocumentById(@PathVariable Long id) {
 
-  
+		return ResponseEntity.ok(documentService.getDocumentById(id));
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DocumentDto> getDocumentById(@PathVariable Long id) {
+	@GetMapping("/emp/{employeeId}")
+	public ResponseEntity<List<DocumentDto>> getDocumentsByEmployeeId(@PathVariable Long employeeId) {
+		List<DocumentDto> docs = documentService.getDocumentsByEmployeeId(employeeId);
+		return ResponseEntity.ok(docs);
+	}
 
-        return ResponseEntity.ok(documentService.getDocumentById(id));
-    }
+	@GetMapping("/view/{id}")
+	public ResponseEntity<Resource> viewDocument(@PathVariable Long id) throws IOException {
+		return documentService.getFile(id, false);
+	}
 
-    @GetMapping("/emp/{employeeId}")
-    public ResponseEntity<List<DocumentDto>> getDocumentsByEmployeeId(@PathVariable Long employeeId) {
-        List<DocumentDto> docs = documentService.getDocumentsByEmployeeId(employeeId);
-        return ResponseEntity.ok(docs);
-    }
-    
-    
+	@GetMapping("/download/{id}")
+	public ResponseEntity<Resource> downloadDocument(@PathVariable Long id) throws IOException {
+		return documentService.getFile(id, true);
+	}
 
-    @GetMapping("/view/{id}")
-    public ResponseEntity<Resource> viewDocument(@PathVariable Long id) throws IOException {
-        return documentService.getFile(id, false);
-    }
+	@GetMapping
+	public ResponseEntity<List<DocumentDto>> getAllDocuments() {
 
+		return ResponseEntity.ok(documentService.getAllDocuments());
+	}
 
-    @GetMapping("/download/{id}")
-    public ResponseEntity<Resource> downloadDocument(@PathVariable Long id) throws IOException {
-        return documentService.getFile(id, true);
-    }
-    
-    @GetMapping
-    public ResponseEntity<List<DocumentDto>> getAllDocuments() {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteDocument(@PathVariable Long id) throws IOException {
 
-        return ResponseEntity.ok(documentService.getAllDocuments());
-    }
+		documentService.deleteDocumentById(id);
 
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDocument(@PathVariable Long id) throws IOException {
-
-        documentService.deleteDocumentById(id);
-
-        return ResponseEntity.ok("Document deleted successfully");
-    }
+		return ResponseEntity.ok("Document deleted successfully");
+	}
 }

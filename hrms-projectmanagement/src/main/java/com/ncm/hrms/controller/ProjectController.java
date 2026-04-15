@@ -15,34 +15,32 @@ import com.ncm.hrms.service.ProjectService;
 @CrossOrigin
 public class ProjectController {
 
-    private final ProjectService projectService;
+	private final ProjectService projectService;
 
-    public ProjectController(ProjectService projectService) {
-        this.projectService = projectService;
-    }
+	public ProjectController(ProjectService projectService) {
+		this.projectService = projectService;
+	}
 
-  
-    @PostMapping 
-    public ProjectResponse createProject(@RequestBody ProjectRequest request) {
-        return projectService.createProject(request);
-    }
+	@PostMapping
+	public ProjectResponse createProject(@RequestBody ProjectRequest request) {
+		return projectService.createProject(request);
+	}
 
-    @GetMapping("/{id}")
-    public ProjectResponse getProjectById(@PathVariable Long id) {
-        return projectService.getProjectById(id);
-    }
+	@GetMapping("/{id}")
+	public ProjectResponse getProjectById(@PathVariable Long id) {
+		return projectService.getProjectById(id);
+	}
 
-    @GetMapping
-    public List<ProjectResponse> getAllProjects() {
-        return projectService.getAllProjects();
-    }
+	@GetMapping
+	public List<ProjectResponse> getAllProjects() {
+		return projectService.getAllProjects();
+	}
 
-    @GetMapping("/active")
-    public List<ProjectResponse> getActiveProjects() {
-        return projectService.getActiveProjects();
-    }
+	@GetMapping("/active")
+	public List<ProjectResponse> getActiveProjects() {
+		return projectService.getActiveProjects();
+	}
 
-  
 //    @PostMapping("/assign")
 //    public EmployeeAssignmentResponse assignEmployee(
 //            @RequestParam Long employeeId,
@@ -52,13 +50,13 @@ public class ProjectController {
 //        return projectService.assignEmployeeToProject(employeeId, projectId, moduleId);
 //    }
 
-    @PostMapping("/modules")
-    public ModulesResponse createModule(@RequestBody ModulesRequest dto) {
-        return projectService.createModule(dto);
-    }
+	@PostMapping("/modules")
+	public ModulesResponse createModule(@RequestBody ModulesRequest dto) {
+		return projectService.createModule(dto);
+	}
 
-    @GetMapping("/{projectId}/modules")
-    public List<ModulesResponse> getProjectModules(@PathVariable Long projectId) {
-        return projectService.getProjectModules(projectId);
-    }
+	@GetMapping("/{projectId}/modules")
+	public List<ModulesResponse> getProjectModules(@PathVariable Long projectId) {
+		return projectService.getProjectModules(projectId);
+	}
 }

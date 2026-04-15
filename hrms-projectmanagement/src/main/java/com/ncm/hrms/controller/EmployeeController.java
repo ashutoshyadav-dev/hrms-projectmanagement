@@ -1,6 +1,5 @@
 package com.ncm.hrms.controller;
 
-
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -18,56 +17,49 @@ import com.ncm.hrms.service.EmployeeTechnologyService;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
-    private final EmployeeTechnologyService empTechSer;
-   private final EmployeeTechnologyService employeeTechnologyService;
+	private final EmployeeService employeeService;
+	private final EmployeeTechnologyService empTechSer;
+	private final EmployeeTechnologyService employeeTechnologyService;
 
-    
-
-    public EmployeeController(EmployeeService employeeService, EmployeeTechnologyService empTechSer,EmployeeTechnologyService employeeTechnologyService) {
+	public EmployeeController(EmployeeService employeeService, EmployeeTechnologyService empTechSer,
+			EmployeeTechnologyService employeeTechnologyService) {
 		super();
 		this.employeeService = employeeService;
 		this.empTechSer = empTechSer;
-		this.employeeTechnologyService=employeeTechnologyService;
+		this.employeeTechnologyService = employeeTechnologyService;
 	}
 
 	@GetMapping("/profile")
-    public EmployeeResponse getProfile(Authentication authentication) {
-        return employeeService.getEmployeeProfile(authentication);
-    }
+	public EmployeeResponse getProfile(Authentication authentication) {
+		return employeeService.getEmployeeProfile(authentication);
+	}
 
-    @PutMapping("/upProfile")
-    public EmployeeResponse updateProfile(Authentication authentication,
-                                          @RequestBody EmployeeRequest request) {
-        return employeeService.updateEmployeeProfile(authentication, request);
-    }
-    
-    @GetMapping("/all")
-    public List<EmployeeResponse> getAllEmployees() {
-        return employeeService.getAllEmployees();
-    }
-    
-    @PostMapping("/empTechnology")
-    public ResponseEntity<?> addSkill(
-            @RequestBody EmployeeTechnologyRequest request,
-            Authentication authentication) {
+	@PutMapping("/upProfile")
+	public EmployeeResponse updateProfile(Authentication authentication, @RequestBody EmployeeRequest request) {
+		return employeeService.updateEmployeeProfile(authentication, request);
+	}
 
-        String email = authentication.getName();
+	@GetMapping("/all")
+	public List<EmployeeResponse> getAllEmployees() {
+		return employeeService.getAllEmployees();
+	}
 
-        empTechSer.addTechnologyByEmail(email, request);
+	@PostMapping("/empTechnology")
+	public ResponseEntity<?> addSkill(@RequestBody EmployeeTechnologyRequest request, Authentication authentication) {
 
-        return ResponseEntity.ok("Skill added");
-    }
-    
-    @GetMapping("/getEmpTechnology")
-    public List<EmployeeTechnologyResponse> getMySkills(Authentication auth) {
-        
-        String email = auth.getName();
-        
-       
+		String email = authentication.getName();
+
+		empTechSer.addTechnologyByEmail(email, request);
+
+		return ResponseEntity.ok("Skill added");
+	}
+
+	@GetMapping("/getEmpTechnology")
+	public List<EmployeeTechnologyResponse> getMySkills(Authentication auth) {
+
+		String email = auth.getName();
+
 		return employeeTechnologyService.getSkillsByEmail(email);
-    }
+	}
 
 }
-
-

@@ -9,7 +9,7 @@ import com.ncm.hrms.entity.Designation;
 
 @Repository
 public interface DesignationRepository extends JpaRepository<Designation, Long> {
-	 Optional<Designation> findByTitle(String title);
-	    boolean existsByTitle(String title);
-}
+	Optional<Designation> findByTitle(String title);
 
+	boolean existsByTitle(String title);
+}

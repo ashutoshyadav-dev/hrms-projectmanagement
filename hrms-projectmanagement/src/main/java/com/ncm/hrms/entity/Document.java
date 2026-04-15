@@ -18,21 +18,20 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "documents")
 public class Document {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	  @ManyToOne(fetch = FetchType.LAZY)
-	  @JoinColumn(name = "employee_id")
-	  private Employee employee;
 
-	  
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "employee_id")
+	private Employee employee;
+
 	private String docName;
 	private String path;
 	private String docType;
 	private Timestamp uploadTime;
-	
+
 	@Enumerated(EnumType.STRING)
 	private ContentType contentType;
 
@@ -106,9 +105,5 @@ public class Document {
 	public void setContentType(ContentType contentType) {
 		this.contentType = contentType;
 	}
- 
-	
-	
-	
-	
+
 }

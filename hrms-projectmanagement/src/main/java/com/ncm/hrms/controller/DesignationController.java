@@ -17,49 +17,40 @@ import com.ncm.hrms.dto.request.DesignationRequest;
 import com.ncm.hrms.dto.response.DesignationResponse;
 import com.ncm.hrms.service.DesignationService;
 
-
 @RestController
 @RequestMapping("/designations")
 public class DesignationController {
 
-    private final DesignationService designationService;
+	private final DesignationService designationService;
 
-    public DesignationController(DesignationService designationService) {
-        this.designationService = designationService;
-    }
+	public DesignationController(DesignationService designationService) {
+		this.designationService = designationService;
+	}
 
-    
-    @PostMapping
-    public ResponseEntity<DesignationResponse> create(@RequestBody DesignationRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(designationService.createDesignation(request));
-    }
+	@PostMapping
+	public ResponseEntity<DesignationResponse> create(@RequestBody DesignationRequest request) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(designationService.createDesignation(request));
+	}
 
-    
-    @GetMapping
-    public ResponseEntity<List<DesignationResponse>> getAll() {
-        return ResponseEntity.ok(designationService.getAllDesignations());
-    }
+	@GetMapping
+	public ResponseEntity<List<DesignationResponse>> getAll() {
+		return ResponseEntity.ok(designationService.getAllDesignations());
+	}
 
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<DesignationResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(designationService.getDesignationById(id));
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<DesignationResponse> getById(@PathVariable Long id) {
+		return ResponseEntity.ok(designationService.getDesignationById(id));
+	}
 
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<DesignationResponse> update(
-            @PathVariable Long id,
-            @RequestBody DesignationRequest request) {
-        return ResponseEntity.ok(designationService.updateDesignation(id, request));
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<DesignationResponse> update(@PathVariable Long id, @RequestBody DesignationRequest request) {
+		return ResponseEntity.ok(designationService.updateDesignation(id, request));
+	}
 
-  
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        designationService.deleteDesignation(id);
-        return ResponseEntity.ok("Designation deleted successfully");
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> delete(@PathVariable Long id) {
+		designationService.deleteDesignation(id);
+		return ResponseEntity.ok("Designation deleted successfully");
+	}
 
 }

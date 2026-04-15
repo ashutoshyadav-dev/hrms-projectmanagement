@@ -1,4 +1,5 @@
 package com.ncm.hrms.controller;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,26 +21,24 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/attendance")
 public class AttendanceController {
 
-    private final AttendanceService attendanceService;
+	private final AttendanceService attendanceService;
 
-    public AttendanceController(AttendanceService attendanceService) {
-        this.attendanceService = attendanceService;
-    }
+	public AttendanceController(AttendanceService attendanceService) {
+		this.attendanceService = attendanceService;
+	}
 
-    @PostMapping("/log")
-    public AttendanceResponse logAttendance(@RequestBody AttendanceRequest request,HttpServletRequest httpRequest) {
-        return attendanceService.logAttendance(request, httpRequest);
-    }
-    
-    @GetMapping("/{empId}")
-    public List<AttendanceResponse> getAttendance(
-            @PathVariable Long empId,
-            @RequestParam String start,
-            @RequestParam String end) {
+	@PostMapping("/log")
+	public AttendanceResponse logAttendance(@RequestBody AttendanceRequest request, HttpServletRequest httpRequest) {
+		return attendanceService.logAttendance(request, httpRequest);
+	}
 
-        LocalDate startDate = LocalDate.parse(start);
-        LocalDate endDate = LocalDate.parse(end);
+	@GetMapping("/{empId}")
+	public List<AttendanceResponse> getAttendance(@PathVariable Long empId, @RequestParam String start,
+			@RequestParam String end) {
 
-        return attendanceService.getAttendanceByEmployeeId(empId, startDate, endDate);
-    }
+		LocalDate startDate = LocalDate.parse(start);
+		LocalDate endDate = LocalDate.parse(end);
+
+		return attendanceService.getAttendanceByEmployeeId(empId, startDate, endDate);
+	}
 }

@@ -8,24 +8,24 @@ import com.ncm.hrms.enums.AttendanceStatus;
 
 public class AttendanceResponse {
 
-    private Long attendanceId;
+	private Long attendanceId;
 
-    private String employeeName;
+	private String employeeName;
 
-    private LocalDate date;
-    
-  private ShiftDto shift;
+	private LocalDate date;
 
-    private LocalDateTime checkIn;
+	private ShiftDto shift;
 
-    private LocalDateTime checkOut;
+	private LocalDateTime checkIn;
 
-    private AttendanceStatus status;
+	private LocalDateTime checkOut;
 
-    private String workingHours;
-    
-    private Long employeeId;
-   
+	private AttendanceStatus status;
+
+	private String workingHours;
+
+	private Long employeeId;
+
 	public Long getEmployeeId() {
 		return employeeId;
 	}
@@ -74,8 +74,6 @@ public class AttendanceResponse {
 		this.checkOut = checkOut;
 	}
 
-	
-
 	public AttendanceStatus getStatus() {
 		return status;
 	}
@@ -99,10 +97,5 @@ public class AttendanceResponse {
 	public void setShift(ShiftDto shift) {
 		this.shift = shift;
 	}
-
-	
-	
-    
-    
 
 }

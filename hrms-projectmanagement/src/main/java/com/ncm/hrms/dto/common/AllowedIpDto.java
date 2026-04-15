@@ -1,12 +1,13 @@
 package com.ncm.hrms.dto.common;
 
 public class AllowedIpDto {
-	
+	private Long id;
+
 	private String ipAddress;
 
-    private String description;
+	private String description;
 
-    private Boolean active;
+	private Boolean active;
 
 	public String getIpAddress() {
 		return ipAddress;
@@ -31,6 +32,13 @@ public class AllowedIpDto {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-    
-    
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 }

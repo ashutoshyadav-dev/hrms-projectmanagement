@@ -16,31 +16,23 @@ import com.ncm.hrms.service.AuthService;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+	@Autowired
+	private AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
+		String token = authService.login(request.getEmail(), request.getPassword());
 
-    	
-        String token = authService.login(
-                request.getEmail(),
-                request.getPassword()
-        );
+		return ResponseEntity.ok().body(Map.of("token", token));
+	}
 
-        return ResponseEntity.ok().body(Map.of(
-                "token", token
-        ));
-    }
-    
+	@PostMapping("/register")
+	public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+		authService.register(request);
 
-        authService.register(request);
-      
-        return ResponseEntity.ok("Registered Successfully");
-    }
+		return ResponseEntity.ok("Registered Successfully");
+	}
 
 }

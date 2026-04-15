@@ -50,13 +50,11 @@ public class Employee {
 	private String phoneNumber;
 
 	private String education;
-	
-	
+
 	@Past
 	private LocalDate dateOfBirth;
-	
-	private LocalDateTime lastLogin;
 
+	private LocalDateTime lastLogin;
 
 	@ManyToOne
 	@JsonIgnoreProperties({ "employees", "hibernateLazyInitializer", "handler" })
@@ -102,23 +100,23 @@ public class Employee {
 	@OneToMany(mappedBy = "employee", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = false)
 	@JsonIgnoreProperties({ "employee" })
 	private List<LeaveRequest> leaveRequests = new ArrayList<>();
-	
+
 	@ManyToOne
-	@JsonIgnoreProperties({"employees"})
+	@JsonIgnoreProperties({ "employees" })
 	private Shift shift;
 
-	@OneToMany(mappedBy = "employee",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JsonIgnoreProperties({"employee"})
+	@OneToMany(mappedBy = "employee", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JsonIgnoreProperties({ "employee" })
 	private List<Attendance> attendances = new ArrayList<>();
 
-	@OneToMany(mappedBy = "employee",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JsonIgnoreProperties({"employee"})
+	@OneToMany(mappedBy = "employee", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JsonIgnoreProperties({ "employee" })
 	private List<AttendanceLog> attendanceLogs = new ArrayList<>();
-	
-	@OneToMany(mappedBy = "employee",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JsonIgnoreProperties({"employee"})
-    private List<Document> document=new ArrayList<>();
-	
+
+	@OneToMany(mappedBy = "employee", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JsonIgnoreProperties({ "employee" })
+	private List<Document> document = new ArrayList<>();
+
 	public Employee() {
 		super();
 	}
@@ -345,8 +343,4 @@ public class Employee {
 		this.attendanceLogs = attendanceLogs;
 	}
 
-	
-	
-	
-	
 }

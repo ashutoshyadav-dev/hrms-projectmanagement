@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.ncm.hrms.entity.Shift;
 
 @Repository
-public interface ShiftRepository extends JpaRepository<Shift, Long>{
+public interface ShiftRepository extends JpaRepository<Shift, Long> {
 
 }

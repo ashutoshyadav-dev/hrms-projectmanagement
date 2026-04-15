@@ -16,59 +16,43 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class Config {
 
-    @Autowired
-    private JwtFilter jwtFilter;
+	@Autowired
+	private JwtFilter jwtFilter;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        
-    	http.cors(cors -> {})
-    	    .csrf(csrf -> csrf.disable())
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/admin/**")
-                   .hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/leaves" , "/leaves/**")
-                   .hasAnyAuthority("ROLE_ADMIN","ROLE_EMPLOYEE")
-                .requestMatchers("/projects/**","/technologies/**")
-                    .hasAnyAuthority("ROLE_ADMIN", "ROLE_EMPLOYEE")
-                .requestMatchers("/employee/all","/employee-assignments")
-                    .hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/employee/**","/designations","/designations/**")
-                    .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN")
-                .requestMatchers("/employee-assignments/byEmail")
-                    .hasAuthority("ROLE_EMPLOYEE")
-                .requestMatchers("/api/attendance/**")
-                   .hasAuthority("ROLE_EMPLOYEE")
-                .requestMatchers("/api/shifts","/api/shifts/**")
-                   .hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/api/documents/**")
-                   .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN")
-                .requestMatchers("/notifications/**")
-                    .hasAnyAuthority("ROLE_EMPLOYEE","ROLE_ADMIN")
-                .anyRequest().authenticated()
-            );
-    	
+		http.cors(cors -> {
+		}).csrf(csrf -> csrf.disable())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll().requestMatchers("/admin/**")
+						.hasAuthority("ROLE_ADMIN").requestMatchers("/leaves", "/leaves/**")
+						.hasAnyAuthority("ROLE_ADMIN", "ROLE_EMPLOYEE")
+						.requestMatchers("/projects/**", "/technologies/**")
+						.hasAnyAuthority("ROLE_ADMIN", "ROLE_EMPLOYEE")
+						.requestMatchers("/employee/all", "/employee-assignments").hasAuthority("ROLE_ADMIN")
+						.requestMatchers("/employee/**", "/designations", "/designations/**")
+						.hasAnyAuthority("ROLE_EMPLOYEE", "ROLE_ADMIN").requestMatchers("/employee-assignments/byEmail")
+						.hasAuthority("ROLE_EMPLOYEE").requestMatchers("/api/attendance/**")
+						.hasAuthority("ROLE_EMPLOYEE").requestMatchers("/api/shifts", "/api/shifts/**")
+						.hasAuthority("ROLE_ADMIN").requestMatchers("/api/documents/**")
+						.hasAnyAuthority("ROLE_EMPLOYEE", "ROLE_ADMIN").requestMatchers("/notifications/**")
+						.hasAnyAuthority("ROLE_EMPLOYEE", "ROLE_ADMIN").anyRequest().authenticated());
+
 //    	http.formLogin(login->login.permitAll());
-	
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+		return http.build();
+	}
 }

@@ -35,9 +35,9 @@ public class EmployeeTechnology {
 
 	@Enumerated(EnumType.STRING)
 	private ProficiencyLevel proficiency;
-	
+
 	@Column(length = 1000)
-    private String usageDescription;
+	private String usageDescription;
 
 	public EmployeeTechnology() {
 		super();
@@ -51,8 +51,6 @@ public class EmployeeTechnology {
 		this.experienceInMonths = experienceInMonths;
 		this.proficiency = proficiency;
 	}
-	
-	
 
 	public EmployeeTechnology(Long id, Employee employee, Technology technology, Integer experienceInMonths,
 			ProficiencyLevel proficiency, String usageDescription) {
@@ -117,8 +115,4 @@ public class EmployeeTechnology {
 		this.experienceInMonths = experienceInMonths;
 	}
 
-
-	
-	
-	
 }

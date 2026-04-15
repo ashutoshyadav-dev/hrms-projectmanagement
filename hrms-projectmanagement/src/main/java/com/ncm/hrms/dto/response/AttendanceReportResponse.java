@@ -4,15 +4,15 @@ import java.time.LocalDate;
 
 public class AttendanceReportResponse {
 
-    private String employeeName;
+	private String employeeName;
 
-    private LocalDate date;
+	private LocalDate date;
 
-    private String status;
+	private String status;
 
-    private String workingHours;
+	private String workingHours;
 
-    private boolean late;
+	private boolean late;
 
 	public String getEmployeeName() {
 		return employeeName;
@@ -53,7 +53,5 @@ public class AttendanceReportResponse {
 	public void setLate(boolean late) {
 		this.late = late;
 	}
-    
-    
 
 }

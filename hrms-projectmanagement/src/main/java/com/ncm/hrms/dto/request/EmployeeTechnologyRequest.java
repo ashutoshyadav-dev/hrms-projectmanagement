@@ -4,82 +4,63 @@ import com.ncm.hrms.enums.ProficiencyLevel;
 
 public class EmployeeTechnologyRequest {
 
-	   private Long technologyId;
-	   private Long employeeId;
-	    private Integer experienceInMonths;
-	    private ProficiencyLevel proficiency;
-	    private String usageDescription;
+	private Long technologyId;
+	private Long employeeId;
+	private Integer experienceInMonths;
+	private ProficiencyLevel proficiency;
+	private String usageDescription;
 
-	    public EmployeeTechnologyRequest() {
-	    }
-	    
-	    
+	public EmployeeTechnologyRequest() {
+	}
 
-		public EmployeeTechnologyRequest(Long technologyId, Long employeeId, Integer experienceInMonths,
-				ProficiencyLevel proficiency, String usageDescription) {
-			super();
-			this.technologyId = technologyId;
-			this.employeeId = employeeId;
-			this.experienceInMonths = experienceInMonths;
-			this.proficiency = proficiency;
-			this.usageDescription = usageDescription;
-		}
+	public EmployeeTechnologyRequest(Long technologyId, Long employeeId, Integer experienceInMonths,
+			ProficiencyLevel proficiency, String usageDescription) {
+		super();
+		this.technologyId = technologyId;
+		this.employeeId = employeeId;
+		this.experienceInMonths = experienceInMonths;
+		this.proficiency = proficiency;
+		this.usageDescription = usageDescription;
+	}
 
+	public Long getTechnologyId() {
+		return technologyId;
+	}
 
+	public void setTechnologyId(Long technologyId) {
+		this.technologyId = technologyId;
+	}
 
-		public Long getTechnologyId() {
-			return technologyId;
-		}
+	public Integer getExperienceInMonths() {
+		return experienceInMonths;
+	}
 
-		public void setTechnologyId(Long technologyId) {
-			this.technologyId = technologyId;
-		}
+	public void setExperienceInMonths(Integer experienceInMonths) {
+		this.experienceInMonths = experienceInMonths;
+	}
 
-		public Integer getExperienceInMonths() {
-			return experienceInMonths;
-		}
+	public ProficiencyLevel getProficiency() {
+		return proficiency;
+	}
 
-		public void setExperienceInMonths(Integer experienceInMonths) {
-			this.experienceInMonths = experienceInMonths;
-		}
+	public void setProficiency(ProficiencyLevel proficiency) {
+		this.proficiency = proficiency;
+	}
 
-		
-		public ProficiencyLevel getProficiency() {
-			return proficiency;
-		}
+	public Long getEmployeeId() {
+		return employeeId;
+	}
 
-		public void setProficiency(ProficiencyLevel proficiency) {
-			this.proficiency = proficiency;
-		}
+	public void setEmployeeId(Long employeeId) {
+		this.employeeId = employeeId;
+	}
 
+	public String getUsageDescription() {
+		return usageDescription;
+	}
 
+	public void setUsageDescription(String usageDescription) {
+		this.usageDescription = usageDescription;
+	}
 
-		public Long getEmployeeId() {
-			return employeeId;
-		}
-
-
-
-		public void setEmployeeId(Long employeeId) {
-			this.employeeId = employeeId;
-		}
-
-
-
-		public String getUsageDescription() {
-			return usageDescription;
-		}
-
-
-
-		public void setUsageDescription(String usageDescription) {
-			this.usageDescription = usageDescription;
-		}
-
-
-
-	    
-	    
-		
-	    
 }

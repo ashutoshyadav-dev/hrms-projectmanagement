@@ -150,7 +150,4 @@ public class LeaveRequest {
 		this.appliedDate = appliedDate;
 	}
 
-
-	
-	
 }

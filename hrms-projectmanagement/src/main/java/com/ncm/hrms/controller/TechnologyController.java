@@ -20,47 +20,40 @@ import com.ncm.hrms.service.TechnologyService;
 @RequestMapping("/technologies")
 public class TechnologyController {
 
-    private final TechnologyService technologyService;
+	private final TechnologyService technologyService;
 
-    public TechnologyController(TechnologyService technologyService) {
-        this.technologyService = technologyService;
-    }
+	public TechnologyController(TechnologyService technologyService) {
+		this.technologyService = technologyService;
+	}
 
-    @PostMapping
-    public ResponseEntity<TechnologyResponse> createTechnology(
-            @RequestBody TechnologyRequest request) {
+	@PostMapping
+	public ResponseEntity<TechnologyResponse> createTechnology(@RequestBody TechnologyRequest request) {
 
-        return ResponseEntity.ok(
-                technologyService.createTechnology(request));
-    }
+		return ResponseEntity.ok(technologyService.createTechnology(request));
+	}
 
-    @GetMapping
-    public ResponseEntity<List<TechnologyResponse>> getAllTechnologies() {
-        return ResponseEntity.ok(
-                technologyService.getAllTechnologies());
-    }
+	@GetMapping
+	public ResponseEntity<List<TechnologyResponse>> getAllTechnologies() {
+		return ResponseEntity.ok(technologyService.getAllTechnologies());
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TechnologyResponse> getTechnologyById(
-            @PathVariable Long id) {
+	@GetMapping("/{id}")
+	public ResponseEntity<TechnologyResponse> getTechnologyById(@PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                technologyService.getTechnologyById(id));
-    }
+		return ResponseEntity.ok(technologyService.getTechnologyById(id));
+	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TechnologyResponse> updateTechnology(
-            @PathVariable Long id,
-            @RequestBody TechnologyRequest request) {
+	@PutMapping("/{id}")
+	public ResponseEntity<TechnologyResponse> updateTechnology(@PathVariable Long id,
+			@RequestBody TechnologyRequest request) {
 
-        return ResponseEntity.ok(
-                technologyService.updateTechnology(id, request));
-    }
+		return ResponseEntity.ok(technologyService.updateTechnology(id, request));
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTechnology(@PathVariable Long id) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteTechnology(@PathVariable Long id) {
 
-        technologyService.deleteTechnology(id);
-        return ResponseEntity.ok("Technology deleted successfully");
-    }
+		technologyService.deleteTechnology(id);
+		return ResponseEntity.ok("Technology deleted successfully");
+	}
 }

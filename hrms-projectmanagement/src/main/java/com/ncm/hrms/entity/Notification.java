@@ -8,70 +8,68 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Notification {
-	
-	    @Id
-	    @GeneratedValue
-	    private Long id;
 
-	    private Long userId;
-	    private String message;
-	    private boolean isRead;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-	    private LocalDateTime createdAt;
+	private Long userId;
+	private String message;
+	private boolean isRead;
 
-		public Notification() {
-			super();
-		}
+	private LocalDateTime createdAt;
 
-		public Notification(Long id, Long userId, String message, boolean isRead, LocalDateTime createdAt) {
-			super();
-			this.id = id;
-			this.userId = userId;
-			this.message = message;
-			this.isRead = isRead;
-			this.createdAt = createdAt;
-		}
+	public Notification() {
+		super();
+	}
 
-		public Long getId() {
-			return id;
-		}
+	public Notification(Long id, Long userId, String message, boolean isRead, LocalDateTime createdAt) {
+		super();
+		this.id = id;
+		this.userId = userId;
+		this.message = message;
+		this.isRead = isRead;
+		this.createdAt = createdAt;
+	}
 
-		public void setId(Long id) {
-			this.id = id;
-		}
+	public Long getId() {
+		return id;
+	}
 
-		public Long getUserId() {
-			return userId;
-		}
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-		public void setUserId(Long userId) {
-			this.userId = userId;
-		}
+	public Long getUserId() {
+		return userId;
+	}
 
-		public String getMessage() {
-			return message;
-		}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
-		public void setMessage(String message) {
-			this.message = message;
-		}
+	public String getMessage() {
+		return message;
+	}
 
-		public boolean isRead() {
-			return isRead;
-		}
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
-		public void setRead(boolean isRead) {
-			this.isRead = isRead;
-		}
+	public boolean isRead() {
+		return isRead;
+	}
 
-		public LocalDateTime getCreatedAt() {
-			return createdAt;
-		}
+	public void setRead(boolean isRead) {
+		this.isRead = isRead;
+	}
 
-		public void setCreatedAt(LocalDateTime createdAt) {
-			this.createdAt = createdAt;
-		}
-	    
-	    
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
 }

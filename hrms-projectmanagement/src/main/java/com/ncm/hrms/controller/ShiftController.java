@@ -11,57 +11,48 @@ import com.ncm.hrms.service.ShiftService;
 @RequestMapping("/api/shifts")
 public class ShiftController {
 
-    private final ShiftService shiftService;
+	private final ShiftService shiftService;
 
-    public ShiftController(ShiftService shiftService) {
-        this.shiftService = shiftService;
-    }
+	public ShiftController(ShiftService shiftService) {
+		this.shiftService = shiftService;
+	}
 
-   
-    @PostMapping
-    public ShiftDto createShift(@RequestBody ShiftDto dto) {
-        return shiftService.createShift(dto);
-    }
+	@PostMapping
+	public ShiftDto createShift(@RequestBody ShiftDto dto) {
+		return shiftService.createShift(dto);
+	}
 
-    @GetMapping
-    public List<ShiftDto> getAllShifts(){
-    	return shiftService.getAllShifts();
-    }
-    
-    
-    @PutMapping("/{id}")
-    public ShiftDto updateShift(
-            @PathVariable Long id,
-            @RequestBody ShiftDto dto) {
+	@GetMapping
+	public List<ShiftDto> getAllShifts() {
+		return shiftService.getAllShifts();
+	}
 
-        return shiftService.updateShift(id, dto);
-    }
+	@PutMapping("/{id}")
+	public ShiftDto updateShift(@PathVariable Long id, @RequestBody ShiftDto dto) {
 
-    
- 
-    @DeleteMapping("/{id}")
-    public String deleteShift(@PathVariable Long id) {
+		return shiftService.updateShift(id, dto);
+	}
 
-        shiftService.deleteShift(id);
+	@DeleteMapping("/{id}")
+	public String deleteShift(@PathVariable Long id) {
 
-        return "Shift deleted successfully";
-    }
+		shiftService.deleteShift(id);
 
-    @GetMapping("/{id}")
-    public ShiftDto getShift(@PathVariable Long id) {
+		return "Shift deleted successfully";
+	}
 
-        return shiftService.getShiftById(id);
-    }
+	@GetMapping("/{id}")
+	public ShiftDto getShift(@PathVariable Long id) {
 
-   
-    @PostMapping("/assign")
-    public String assignShift(
-            @RequestParam Long shiftId,
-            @RequestParam Long employeeId) {
+		return shiftService.getShiftById(id);
+	}
 
-        shiftService.assignShiftToEmployee(shiftId, employeeId);
+	@PostMapping("/assign")
+	public String assignShift(@RequestParam Long shiftId, @RequestParam Long employeeId) {
 
-        return "Shift assigned successfully";
-    }
+		shiftService.assignShiftToEmployee(shiftId, employeeId);
+
+		return "Shift assigned successfully";
+	}
 
 }

@@ -1,8 +1,5 @@
 package com.ncm.hrms.enums;
 
 public enum TechnologyType {
-   FRONTEND,
-   BACKEND,
-   DATABASE,
-   DEVOPS
+	FRONTEND, BACKEND, DATABASE, DEVOPS
 }

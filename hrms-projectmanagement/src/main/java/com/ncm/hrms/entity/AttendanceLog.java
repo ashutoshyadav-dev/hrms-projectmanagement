@@ -8,20 +8,20 @@ import com.ncm.hrms.enums.LogType;
 @Entity
 public class AttendanceLog {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private LocalDateTime timestamp;
+	private LocalDateTime timestamp;
 
-    @Enumerated(EnumType.STRING)
-    private LogType type;
+	@Enumerated(EnumType.STRING)
+	private LogType type;
 
-    private String ipAddress;
+	private String ipAddress;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+	@ManyToOne
+	@JoinColumn(name = "employee_id")
+	private Employee employee;
 
 	public AttendanceLog() {
 		super();
@@ -43,7 +43,6 @@ public class AttendanceLog {
 		this.timestamp = timestamp;
 	}
 
-
 	public LogType getType() {
 		return type;
 	}
@@ -60,8 +59,6 @@ public class AttendanceLog {
 		this.ipAddress = ipAddress;
 	}
 
-
-
 	public Employee getEmployee() {
 		return employee;
 	}
@@ -69,7 +66,5 @@ public class AttendanceLog {
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 	}
-    
-    
 
 }

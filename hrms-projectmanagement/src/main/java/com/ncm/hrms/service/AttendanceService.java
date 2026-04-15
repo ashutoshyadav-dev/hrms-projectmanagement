@@ -30,176 +30,139 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class AttendanceService {
 
-    private final AttendanceRepository attendanceRepo;
-    private final AttendanceLogRepository attendanceLogRepo;
-    private final EmployeeRepository empRepo;
-    private final AllowedIpService allowedIpService;
+	private final AttendanceRepository attendanceRepo;
+	private final AttendanceLogRepository attendanceLogRepo;
+	private final EmployeeRepository empRepo;
+	private final AllowedIpService allowedIpService;
 
-    public AttendanceService(
-            AttendanceRepository attendanceRepo,
-            AttendanceLogRepository attendanceLogRepo,
-            EmployeeRepository empRepo,
-            AllowedIpService allowedIpService) {
+	public AttendanceService(AttendanceRepository attendanceRepo, AttendanceLogRepository attendanceLogRepo,
+			EmployeeRepository empRepo, AllowedIpService allowedIpService) {
 
-        this.attendanceRepo = attendanceRepo;
-        this.attendanceLogRepo = attendanceLogRepo;
-        this.empRepo = empRepo;
-        this.allowedIpService = allowedIpService;
-    }
+		this.attendanceRepo = attendanceRepo;
+		this.attendanceLogRepo = attendanceLogRepo;
+		this.empRepo = empRepo;
+		this.allowedIpService = allowedIpService;
+	}
 
+	public AttendanceResponse logAttendance(AttendanceRequest requestDto, HttpServletRequest request) {
 
-    
+		Employee employee = getEmployee(requestDto.getEmployeeId());
 
-    public AttendanceResponse logAttendance( AttendanceRequest requestDto,HttpServletRequest request) {
-    	
-        Employee employee = getEmployee(requestDto.getEmployeeId());
+		validateEmployeeStatus(employee);
 
-        validateEmployeeStatus(employee);
+		String ip = getClientIp(request);
 
-        String ip = getClientIp(request);
+		validateIp(ip);
 
-        validateIp(ip);
+		AttendanceLog log = createAttendanceLog(employee, ip, requestDto.getType());
 
-        AttendanceLog log = createAttendanceLog(
-                employee,
-                ip,
-                requestDto.getType()   
-        );
+		attendanceLogRepo.save(log);
 
-        attendanceLogRepo.save(log);
+		List<AttendanceLog> logs = getTodayLogs(employee.getId());
 
-        List<AttendanceLog> logs = getTodayLogs(employee.getId());
+		Attendance attendance = processAttendance(employee, logs);
 
-        Attendance attendance = processAttendance(employee, logs);
+		return buildResponse(employee, attendance);
+	}
 
-        return buildResponse(employee, attendance);
-    }
+	private Employee getEmployee(Long employeeId) {
 
+		return empRepo.findById(employeeId).orElseThrow(() -> new RuntimeException("Employee not found"));
+	}
 
+	private void validateEmployeeStatus(Employee employee) {
 
-    private Employee getEmployee(Long employeeId) {
+		if (employee.getStatus() != EmpStatus.ACTIVE) {
+			throw new RuntimeException("Employee is not active");
+		}
+	}
 
-        return empRepo.findById(employeeId)
-                .orElseThrow(() ->
-                        new RuntimeException("Employee not found"));
-    }
+	private void validateIp(String ip) {
 
+		allowedIpService.validateIp(ip);
+	}
 
-    private void validateEmployeeStatus(Employee employee) {
+	private String getClientIp(HttpServletRequest request) {
 
-        if (employee.getStatus() != EmpStatus.ACTIVE) {
-            throw new RuntimeException("Employee is not active");
-        }
-    }
+		String ip = request.getHeader("X-FORWARDED-FOR");
 
+		if (ip == null || ip.isEmpty()) {
+			ip = request.getRemoteAddr();
+		}
 
-    private void validateIp(String ip) {
+		return ip;
+	}
 
-        allowedIpService.validateIp(ip);
-    }
+	private AttendanceLog createAttendanceLog(Employee employee, String ip, LogType type) {
 
+		AttendanceLog log = new AttendanceLog();
 
+		log.setEmployee(employee);
+		log.setTimestamp(LocalDateTime.now());
+		log.setType(type);
+		log.setIpAddress(ip);
 
-    private String getClientIp(HttpServletRequest request) {
-
-        String ip = request.getHeader("X-FORWARDED-FOR");
-
-        if (ip == null || ip.isEmpty()) {
-            ip = request.getRemoteAddr();
-        }
-
-        return ip;
-    }
-
-
-
-    private AttendanceLog createAttendanceLog(
-            Employee employee,
-            String ip,
-            LogType type) {
-
-        AttendanceLog log = new AttendanceLog();
-
-        log.setEmployee(employee);
-        log.setTimestamp(LocalDateTime.now());
-        log.setType(type);
-        log.setIpAddress(ip);
-
-        return log;
-    }
-
-
+		return log;
+	}
 
 //    private List<AttendanceLog> getTodayLogs(Long employeeId) {
 //
 //        return attendanceLogRepo.findTodayLogsByEmployee(employeeId);
 //    }
 
-    
-    private List<AttendanceLog> getTodayLogs(Long employeeId) {
+	private List<AttendanceLog> getTodayLogs(Long employeeId) {
 
-        LocalDate today = LocalDate.now();
+		LocalDate today = LocalDate.now();
 
-        LocalDateTime startOfDay = today.atStartOfDay();
+		LocalDateTime startOfDay = today.atStartOfDay();
 
-        LocalDateTime endOfDay = today.atTime(23, 59, 59);
+		LocalDateTime endOfDay = today.atTime(23, 59, 59);
 
-        return attendanceLogRepo.findTodayLogsByEmployee(
-                employeeId,
-                startOfDay,
-                endOfDay
-        );
-    }
+		return attendanceLogRepo.findTodayLogsByEmployee(employeeId, startOfDay, endOfDay);
+	}
 
+	private Attendance processAttendance(Employee employee, List<AttendanceLog> logs) {
 
-    private Attendance processAttendance(Employee employee,List<AttendanceLog> logs) {
+		LocalDate today = LocalDate.now();
 
-        LocalDate today = LocalDate.now();
+		Attendance attendance = attendanceRepo.findByEmployeeIdAndDate(employee.getId(), today)
+				.orElse(new Attendance());
 
-        Attendance attendance = attendanceRepo
-                .findByEmployeeIdAndDate(employee.getId(), today)
-                .orElse(new Attendance());
+		attendance.setEmployee(employee);
+		attendance.setDate(today);
 
-        attendance.setEmployee(employee);
-        attendance.setDate(today);
+		AttendanceLog firstCheckInLog = logs.stream().filter(l -> l.getType() == LogType.CHECK_IN)
+				.min((a, b) -> a.getTimestamp().compareTo(b.getTimestamp())).orElse(null);
 
-        
-        AttendanceLog firstCheckInLog = logs.stream()
-                .filter(l -> l.getType() == LogType.CHECK_IN)
-                .min((a,b) -> a.getTimestamp().compareTo(b.getTimestamp()))
-                .orElse(null);
+		AttendanceLog lastCheckOutLog = logs.stream().filter(l -> l.getType() == LogType.CHECK_OUT)
+				.max((a, b) -> a.getTimestamp().compareTo(b.getTimestamp())).orElse(null);
 
-        AttendanceLog lastCheckOutLog = logs.stream()
-                .filter(l -> l.getType() == LogType.CHECK_OUT)
-                .max((a,b) -> a.getTimestamp().compareTo(b.getTimestamp()))
-                .orElse(null);
-        
-        LocalDateTime firstCheckIn=null;
-        LocalDateTime lastCheckOut=null;
-        
-        if(firstCheckInLog != null){
-        	firstCheckIn=firstCheckInLog.getTimestamp();
-            attendance.setCheckInTime(firstCheckInLog.getTimestamp());
-            attendance.setCheckInIp(firstCheckInLog.getIpAddress());
-        }
+		LocalDateTime firstCheckIn = null;
+		LocalDateTime lastCheckOut = null;
 
-        if(lastCheckOutLog != null){
-        	lastCheckOut=lastCheckOutLog.getTimestamp();
-            attendance.setCheckOutTime(lastCheckOutLog.getTimestamp());
-            attendance.setCheckOutIp(lastCheckOutLog.getIpAddress());
-        }
-        
-        Shift shift=employee.getShift();
-        if (shift == null) {
-            throw new IllegalStateException("Shift not assigned to employee");
-        }
-        
-        if (firstCheckIn == null) {
-            attendance.setStatus(AttendanceStatus.ABSENT);
-            return attendanceRepo.save(attendance);
-        } 
-       
-        LocalTime checkInTime = attendance.getCheckInTime().toLocalTime();
+		if (firstCheckInLog != null) {
+			firstCheckIn = firstCheckInLog.getTimestamp();
+			attendance.setCheckInTime(firstCheckInLog.getTimestamp());
+			attendance.setCheckInIp(firstCheckInLog.getIpAddress());
+		}
+
+		if (lastCheckOutLog != null) {
+			lastCheckOut = lastCheckOutLog.getTimestamp();
+			attendance.setCheckOutTime(lastCheckOutLog.getTimestamp());
+			attendance.setCheckOutIp(lastCheckOutLog.getIpAddress());
+		}
+
+		Shift shift = employee.getShift();
+		if (shift == null) {
+			throw new IllegalStateException("Shift not assigned to employee");
+		}
+
+		if (firstCheckIn == null) {
+			attendance.setStatus(AttendanceStatus.ABSENT);
+			return attendanceRepo.save(attendance);
+		}
+
+		LocalTime checkInTime = attendance.getCheckInTime().toLocalTime();
 
 //        LocalTime startReference = Boolean.TRUE.equals(shift.getFlexible())
 //                ? shift.getFlexibleStartLimit()
@@ -231,156 +194,137 @@ public class AttendanceService {
 //            attendance.setLate(false);
 //        }
 //        
-        LocalTime ref = Boolean.TRUE.equals(shift.getFlexible())
-        	    ? shift.getFlexibleStartLimit()
-        	    : shift.getStartTime();
+		LocalTime ref = Boolean.TRUE.equals(shift.getFlexible()) ? shift.getFlexibleStartLimit() : shift.getStartTime();
 
-        	Duration lateDuration = checkInTime.isAfter(ref)
-        	    ? Duration.between(ref, checkInTime)
-        	    : Duration.ZERO;
+		Duration lateDuration = checkInTime.isAfter(ref) ? Duration.between(ref, checkInTime) : Duration.ZERO;
 
-        	if (lateDuration.compareTo(Duration.ofHours(2)) > 0) {
-        	    attendance.setStatus(AttendanceStatus.HALF_DAY);
-        	    attendance.setLate(true);
-        	} else if (lateDuration.compareTo(Duration.ZERO) > 0) {
-        	    attendance.setStatus(AttendanceStatus.LATE);
-        	    attendance.setLate(true);
-        	} else {
-        	    attendance.setStatus(AttendanceStatus.PRESENT);
-        	    attendance.setLate(false);
-        	}
-        if (firstCheckIn != null && lastCheckOut != null) {
+		if (lateDuration.compareTo(Duration.ofHours(2)) > 0) {
+			attendance.setStatus(AttendanceStatus.HALF_DAY);
+			attendance.setLate(true);
+		} else if (lateDuration.compareTo(Duration.ZERO) > 0) {
+			attendance.setStatus(AttendanceStatus.LATE);
+			attendance.setLate(true);
+		} else {
+			attendance.setStatus(AttendanceStatus.PRESENT);
+			attendance.setLate(false);
+		}
+		if (firstCheckIn != null && lastCheckOut != null) {
 
-            Duration workingHours = Duration.between(firstCheckIn, lastCheckOut);
-            attendance.setWorkingHours(workingHours);
- 
-            if (shift.getRequiredWorkHours() != null && workingHours != null) {
+			Duration workingHours = Duration.between(firstCheckIn, lastCheckOut);
+			attendance.setWorkingHours(workingHours);
 
-                long workedHours = workingHours.toHours();
+			if (shift.getRequiredWorkHours() != null && workingHours != null) {
 
-                if (workedHours < shift.getRequiredWorkHours()) {
-                    attendance.setEarlyExit(true);
-                } else {
-                    attendance.setEarlyExit(false);
-                }
-            }
-            
-        }
-        
-        
-        
-        return attendanceRepo.save(attendance);
-    }
+				long workedHours = workingHours.toHours();
 
+				if (workedHours < shift.getRequiredWorkHours()) {
+					attendance.setEarlyExit(true);
+				} else {
+					attendance.setEarlyExit(false);
+				}
+			}
 
-    
-    //=========================================================================================================================
-    
-    public List<AttendanceResponse> getAttendanceByEmployeeId( Long empId, LocalDate start, LocalDate end) {
-        Employee emp = empRepo.findById(empId)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
-        
-        if (start == null || end == null) {
-            throw new IllegalArgumentException("Start and End date cannot be null");
-        }
-        
-        if (emp.getHireDate() == null) {
-            throw new RuntimeException("Employee hire date is missing");
-        }
-        
-        if (emp.getShift() == null) {
-            throw new IllegalStateException("Shift not assigned to employee");
-        }
-        
-        LocalDate hireDate = emp.getHireDate();
-        if (hireDate != null && start.isBefore(hireDate)) {
-            start = hireDate;
-        }
-       
-        
-        List<Attendance> attendanceList =
-                attendanceRepo.findAllAttendanceByEmployeeIdAndRange(empId, start, end);
+		}
 
-        
-        Map<LocalDate, Attendance> attendanceMap = new HashMap<>();
-        for (Attendance a : attendanceList) {
-            if(a.getDate() != null) {
-            	attendanceMap.put(a.getDate(), a);
-            }
-        }
+		return attendanceRepo.save(attendance);
+	}
 
-        List<AttendanceResponse> resList = new ArrayList<>();
-        LocalDate today = LocalDate.now();
+	// =========================================================================================================================
 
-       
-        for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+	public List<AttendanceResponse> getAttendanceByEmployeeId(Long empId, LocalDate start, LocalDate end) {
+		Employee emp = empRepo.findById(empId).orElseThrow(() -> new RuntimeException("Employee not found"));
 
-            if (attendanceMap.containsKey(date)) {
-               
-                resList.add(buildResponse(emp, attendanceMap.get(date)));
+		if (start == null || end == null) {
+			throw new IllegalArgumentException("Start and End date cannot be null");
+		}
 
-            } else {
-                
-                AttendanceResponse res = new AttendanceResponse();
+		if (emp.getHireDate() == null) {
+			throw new RuntimeException("Employee hire date is missing");
+		}
 
-                res.setEmployeeId(emp.getId());
-                res.setEmployeeName(emp.getName());
-                res.setDate(date);
-                res.setShift(mapToShiftDto(emp.getShift()));
+		if (emp.getShift() == null) {
+			throw new IllegalStateException("Shift not assigned to employee");
+		}
 
-                if (date.isAfter(today)) {
-                    res.setStatus(AttendanceStatus.UPCOMING);  
+		LocalDate hireDate = emp.getHireDate();
+		if (hireDate != null && start.isBefore(hireDate)) {
+			start = hireDate;
+		}
 
-                } else if (date.isEqual(today)) {
-                    res.setStatus(AttendanceStatus.PENDING);   
+		List<Attendance> attendanceList = attendanceRepo.findAllAttendanceByEmployeeIdAndRange(empId, start, end);
 
-                } else {
-                    res.setStatus(AttendanceStatus.ABSENT);    
-                }
+		Map<LocalDate, Attendance> attendanceMap = new HashMap<>();
+		for (Attendance a : attendanceList) {
+			if (a.getDate() != null) {
+				attendanceMap.put(a.getDate(), a);
+			}
+		}
 
-                resList.add(res);
-            }
-        }
+		List<AttendanceResponse> resList = new ArrayList<>();
+		LocalDate today = LocalDate.now();
 
-        return resList;
-    }
-    
-    //=======================================================================================================================================
-    
-                           
-    
+		for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
 
-    private AttendanceResponse buildResponse( Employee employee,Attendance attendance) {
+			if (attendanceMap.containsKey(date)) {
 
-        AttendanceResponse response = new AttendanceResponse();
-        response.setEmployeeId(employee.getId());
-        response.setEmployeeName(employee.getName());
-        response.setDate(attendance.getDate());
-        response.setCheckIn(attendance.getCheckInTime());
-        response.setCheckOut(attendance.getCheckOutTime());
-        response.setStatus(attendance.getStatus());
-        response.setShift(mapToShiftDto(employee.getShift()));
+				resList.add(buildResponse(emp, attendanceMap.get(date)));
 
-        return response;
-    }
-    
-    private ShiftDto mapToShiftDto(Shift shift) {
+			} else {
 
-        if (shift == null) return null;
+				AttendanceResponse res = new AttendanceResponse();
 
-        ShiftDto dto = new ShiftDto();
-        dto.setId(shift.getId());
-        dto.setName(shift.getName());
-        dto.setStartTime(shift.getStartTime());
-        dto.setEndTime(shift.getEndTime());
-        dto.setFlexibleStartLimit(shift.getFlexibleStartLimit());
-        dto.setRequiredWorkHours(
-            shift.getRequiredWorkHours() != null
-                ? shift.getRequiredWorkHours()
-                : null
-        );
-        dto.setFlexible(shift.getFlexible());
+				res.setEmployeeId(emp.getId());
+				res.setEmployeeName(emp.getName());
+				res.setDate(date);
+				res.setShift(mapToShiftDto(emp.getShift()));
 
-        return dto;
-    }
+				if (date.isAfter(today)) {
+					res.setStatus(AttendanceStatus.UPCOMING);
+
+				} else if (date.isEqual(today)) {
+					res.setStatus(AttendanceStatus.PENDING);
+
+				} else {
+					res.setStatus(AttendanceStatus.ABSENT);
+				}
+
+				resList.add(res);
+			}
+		}
+
+		return resList;
+	}
+
+	// =======================================================================================================================================
+
+	private AttendanceResponse buildResponse(Employee employee, Attendance attendance) {
+
+		AttendanceResponse response = new AttendanceResponse();
+		response.setEmployeeId(employee.getId());
+		response.setEmployeeName(employee.getName());
+		response.setDate(attendance.getDate());
+		response.setCheckIn(attendance.getCheckInTime());
+		response.setCheckOut(attendance.getCheckOutTime());
+		response.setStatus(attendance.getStatus());
+		response.setShift(mapToShiftDto(employee.getShift()));
+
+		return response;
+	}
+
+	private ShiftDto mapToShiftDto(Shift shift) {
+
+		if (shift == null)
+			return null;
+
+		ShiftDto dto = new ShiftDto();
+		dto.setId(shift.getId());
+		dto.setName(shift.getName());
+		dto.setStartTime(shift.getStartTime());
+		dto.setEndTime(shift.getEndTime());
+		dto.setFlexibleStartLimit(shift.getFlexibleStartLimit());
+		dto.setRequiredWorkHours(shift.getRequiredWorkHours() != null ? shift.getRequiredWorkHours() : null);
+		dto.setFlexible(shift.getFlexible());
+
+		return dto;
+	}
 }

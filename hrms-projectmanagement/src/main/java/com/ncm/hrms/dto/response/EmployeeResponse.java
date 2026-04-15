@@ -1,7 +1,5 @@
 package com.ncm.hrms.dto.response;
 
-
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,31 +13,31 @@ import com.ncm.hrms.enums.EmpStatus;
 
 public class EmployeeResponse {
 
-    private Long id;
-    private String name;
-    private String email;
-    private String phoneNumber;
-    private String education;
-    private EmpRole role;
+	private Long id;
+	private String name;
+	private String email;
+	private String phoneNumber;
+	private String education;
+	private EmpRole role;
 
-    private DesignationResponse designation;
+	private DesignationResponse designation;
 
-    private LocalDate hireDate;
-    private LocalDate dateOfBirth;
-    private LocalDateTime createdAt;
+	private LocalDate hireDate;
+	private LocalDate dateOfBirth;
+	private LocalDateTime createdAt;
 
-    private Address currentAddress;
-    private Address permanentAddress;
-    private boolean sameAsPermanent;
+	private Address currentAddress;
+	private Address permanentAddress;
+	private boolean sameAsPermanent;
 
-    private EmpStatus status;
+	private EmpStatus status;
 
-    private List<EmployeeTechnologyResponse> technologies;
+	private List<EmployeeTechnologyResponse> technologies;
 
-  private List<EmployeeAssignment> assignments;
-    
-    private List<LeaveRequest> leaveRequests ;
-    private List<Modules> modules;
+	private List<EmployeeAssignment> assignments;
+
+	private List<LeaveRequest> leaveRequests;
+	private List<Modules> modules;
 
 	public Long getId() {
 		return id;
@@ -185,10 +183,4 @@ public class EmployeeResponse {
 		this.role = role;
 	}
 
-
-    
-	
-    
-    
 }
-

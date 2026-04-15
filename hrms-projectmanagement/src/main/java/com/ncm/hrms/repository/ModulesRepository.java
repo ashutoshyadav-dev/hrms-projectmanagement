@@ -8,9 +8,8 @@ import com.ncm.hrms.entity.Modules;
 
 public interface ModulesRepository extends JpaRepository<Modules, Long> {
 
-    List<Modules> findByProjectProjectId(Long projectId);
+	List<Modules> findByProjectProjectId(Long projectId);
 
-    List<Modules> findByEmployeeId(Long employeeId);
-    
-  
+	List<Modules> findByEmployeeId(Long employeeId);
+
 }

@@ -142,5 +142,4 @@ public class Project {
 		this.assignments = assignments;
 	}
 
-	
 }

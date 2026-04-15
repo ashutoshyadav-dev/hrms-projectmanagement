@@ -118,6 +118,4 @@ public class EmployeeAssignment {
 		this.projectStatus = projectStatus;
 	}
 
-	
-	
 }

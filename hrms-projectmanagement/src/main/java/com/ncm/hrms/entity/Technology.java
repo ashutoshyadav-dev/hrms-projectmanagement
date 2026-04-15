@@ -57,7 +57,4 @@ public class Technology {
 		this.technologyType = technologyType;
 	}
 
-
-	
-	
 }

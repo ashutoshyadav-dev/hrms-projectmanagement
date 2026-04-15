@@ -10,38 +10,36 @@ import com.ncm.hrms.enums.AttendanceStatus;
 @Entity
 public class Attendance {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private LocalDate date;
+	private LocalDate date;
 
-    private LocalDateTime checkInTime;
+	private LocalDateTime checkInTime;
 
-    private LocalDateTime checkOutTime;
+	private LocalDateTime checkOutTime;
 
-    private Duration workingHours;
+	private Duration workingHours;
 
-    private Boolean late;
+	private Boolean late;
 
-    private Boolean earlyExit;
+	private Boolean earlyExit;
 
-    @Enumerated(EnumType.STRING)
-    private AttendanceStatus status;
+	@Enumerated(EnumType.STRING)
+	private AttendanceStatus status;
 
-    private String checkInIp;
+	private String checkInIp;
 
-    private String checkOutIp;
+	private String checkOutIp;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+	@ManyToOne
+	@JoinColumn(name = "employee_id")
+	private Employee employee;
 
 	public Attendance() {
 		super();
 	}
-	
-	
 
 	public Long getId() {
 		return id;
@@ -99,19 +97,13 @@ public class Attendance {
 		this.earlyExit = earlyExit;
 	}
 
-	
-
 	public AttendanceStatus getStatus() {
 		return status;
 	}
 
-
-
 	public void setStatus(AttendanceStatus status) {
 		this.status = status;
 	}
-
-
 
 	public String getCheckInIp() {
 		return checkInIp;
@@ -136,7 +128,5 @@ public class Attendance {
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 	}
-    
-    
 
 }

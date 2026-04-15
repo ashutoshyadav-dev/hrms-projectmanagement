@@ -5,15 +5,15 @@ import jakarta.persistence.*;
 @Entity
 public class AllowedIp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String ipAddress;
+	private String ipAddress;
 
-    private String description;
+	private String description;
 
-    private Boolean active;
+	private Boolean active;
 
 	public AllowedIp() {
 		super();
@@ -58,7 +58,5 @@ public class AllowedIp {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-
-  
 
 }

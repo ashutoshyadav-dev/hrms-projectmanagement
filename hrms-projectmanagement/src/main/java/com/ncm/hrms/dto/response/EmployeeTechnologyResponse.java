@@ -3,100 +3,75 @@ package com.ncm.hrms.dto.response;
 import com.ncm.hrms.enums.ProficiencyLevel;
 
 public class EmployeeTechnologyResponse {
-	
-	   private Long technologyId;
-	   private String technologyName;
-	   private Long employeeId;
-	    private Integer experienceInMonths;
-	    private ProficiencyLevel proficiency;
-	    private String usageDescription;
 
-	   
+	private Long technologyId;
+	private String technologyName;
+	private Long employeeId;
+	private Integer experienceInMonths;
+	private ProficiencyLevel proficiency;
+	private String usageDescription;
 
+	public EmployeeTechnologyResponse() {
+		super();
+	}
 
+	public EmployeeTechnologyResponse(Long technologyId, String technologyName, Long employeeId,
+			Integer experienceInMonths, ProficiencyLevel proficiency, String usageDescription) {
+		super();
+		this.technologyId = technologyId;
+		this.technologyName = technologyName;
+		this.employeeId = employeeId;
+		this.experienceInMonths = experienceInMonths;
+		this.proficiency = proficiency;
+		this.usageDescription = usageDescription;
+	}
 
-		public EmployeeTechnologyResponse() {
-			super();
-		}
-		
-		
-		
+	public Long getTechnologyId() {
+		return technologyId;
+	}
 
-		public EmployeeTechnologyResponse(Long technologyId, String technologyName, Long employeeId,
-				Integer experienceInMonths, ProficiencyLevel proficiency, String usageDescription) {
-			super();
-			this.technologyId = technologyId;
-			this.technologyName = technologyName;
-			this.employeeId = employeeId;
-			this.experienceInMonths = experienceInMonths;
-			this.proficiency = proficiency;
-			this.usageDescription = usageDescription;
-		}
+	public void setTechnologyId(Long technologyId) {
+		this.technologyId = technologyId;
+	}
 
+	public Integer getExperienceInMonths() {
+		return experienceInMonths;
+	}
 
-		public Long getTechnologyId() {
-			return technologyId;
-		}
+	public void setExperienceInMonths(Integer experienceInMonths) {
+		this.experienceInMonths = experienceInMonths;
+	}
 
-		public void setTechnologyId(Long technologyId) {
-			this.technologyId = technologyId;
-		}
+	public ProficiencyLevel getProficiency() {
+		return proficiency;
+	}
 
-		public Integer getExperienceInMonths() {
-			return experienceInMonths;
-		}
+	public void setProficiency(ProficiencyLevel proficiency) {
+		this.proficiency = proficiency;
+	}
 
-		public void setExperienceInMonths(Integer experienceInMonths) {
-			this.experienceInMonths = experienceInMonths;
-		}
+	public Long getEmployeeId() {
+		return employeeId;
+	}
 
-		
-		public ProficiencyLevel getProficiency() {
-			return proficiency;
-		}
+	public void setEmployeeId(Long employeeId) {
+		this.employeeId = employeeId;
+	}
 
-		public void setProficiency(ProficiencyLevel proficiency) {
-			this.proficiency = proficiency;
-		}
+	public String getUsageDescription() {
+		return usageDescription;
+	}
 
+	public void setUsageDescription(String usageDescription) {
+		this.usageDescription = usageDescription;
+	}
 
+	public String getTechnologyName() {
+		return technologyName;
+	}
 
-		public Long getEmployeeId() {
-			return employeeId;
-		}
-
-
-
-		public void setEmployeeId(Long employeeId) {
-			this.employeeId = employeeId;
-		}
-
-
-
-		public String getUsageDescription() {
-			return usageDescription;
-		}
-
-
-
-		public void setUsageDescription(String usageDescription) {
-			this.usageDescription = usageDescription;
-		}
-
-
-
-
-		public String getTechnologyName() {
-			return technologyName;
-		}
-
-
-
-
-		public void setTechnologyName(String technologyName) {
-			this.technologyName = technologyName;
-		}
-		
-		
+	public void setTechnologyName(String technologyName) {
+		this.technologyName = technologyName;
+	}
 
 }

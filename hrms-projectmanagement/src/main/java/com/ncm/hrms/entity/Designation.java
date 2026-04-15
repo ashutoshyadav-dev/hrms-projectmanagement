@@ -9,17 +9,17 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "designations")
-public class Designation {  
-	@Id   
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private Long id;   
-	
-	@Column(nullable = false, unique = true)  
-	private String title;    
-	
-	private String description;    
+public class Designation {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(nullable = false, unique = true)
+	private String title;
+
+	private String description;
 	private Double baseSalary;
-	
+
 	public Designation() {
 		super();
 	}
@@ -62,8 +62,5 @@ public class Designation {
 	public void setBaseSalary(Double baseSalary) {
 		this.baseSalary = baseSalary;
 	}
-
-	
-	
 
 }

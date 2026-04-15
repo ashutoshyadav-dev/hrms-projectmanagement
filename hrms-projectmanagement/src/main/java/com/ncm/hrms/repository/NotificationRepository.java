@@ -10,7 +10,7 @@ import com.ncm.hrms.entity.Notification;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    List<Notification> findByUserIdOrderByCreatedAtDesc(Long userId);
+	List<Notification> findByUserIdOrderByCreatedAtDesc(Long userId);
 
-    long countByUserIdAndIsReadFalse(Long userId);
+	long countByUserIdAndIsReadFalse(Long userId);
 }

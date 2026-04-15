@@ -13,72 +13,64 @@ import com.ncm.hrms.repository.TechnologyRepository;
 @Service
 public class TechnologyService {
 
-    private final TechnologyRepository technologyRepository;
+	private final TechnologyRepository technologyRepository;
 
-    public TechnologyService(TechnologyRepository technologyRepository) {
-        this.technologyRepository = technologyRepository;
-    }
+	public TechnologyService(TechnologyRepository technologyRepository) {
+		this.technologyRepository = technologyRepository;
+	}
 
-    
-    public TechnologyResponse createTechnology(TechnologyRequest request) {
+	public TechnologyResponse createTechnology(TechnologyRequest request) {
 
-        if (technologyRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new RuntimeException("Technology already exists");
-        }
+		if (technologyRepository.existsByNameIgnoreCase(request.getName())) {
+			throw new RuntimeException("Technology already exists");
+		}
 
-        Technology technology = new Technology();
-        technology.setName(request.getName());
-        technology.setTechnologyType(request.getTechnologyType());
+		Technology technology = new Technology();
+		technology.setName(request.getName());
+		technology.setTechnologyType(request.getTechnologyType());
 
-        Technology saved = technologyRepository.save(technology);
+		Technology saved = technologyRepository.save(technology);
 
-        return mapToResponse(saved);
-    }
+		return mapToResponse(saved);
+	}
 
-   
-    public List<TechnologyResponse> getAllTechnologies() {
-        return technologyRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
+	public List<TechnologyResponse> getAllTechnologies() {
+		return technologyRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+	}
 
-   
-    public TechnologyResponse getTechnologyById(Long id) {
-        Technology technology = technologyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Technology not found"));
+	public TechnologyResponse getTechnologyById(Long id) {
+		Technology technology = technologyRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Technology not found"));
 
-        return mapToResponse(technology);
-    }
+		return mapToResponse(technology);
+	}
 
-   
-    public TechnologyResponse updateTechnology(Long id, TechnologyRequest request) {
+	public TechnologyResponse updateTechnology(Long id, TechnologyRequest request) {
 
-        Technology technology = technologyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Technology not found"));
+		Technology technology = technologyRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Technology not found"));
 
-        technology.setName(request.getName());
-        technology.setTechnologyType(request.getTechnologyType());
+		technology.setName(request.getName());
+		technology.setTechnologyType(request.getTechnologyType());
 
-        Technology updated = technologyRepository.save(technology);
+		Technology updated = technologyRepository.save(technology);
 
-        return mapToResponse(updated);
-    }
+		return mapToResponse(updated);
+	}
 
-  
-    public void deleteTechnology(Long id) {
+	public void deleteTechnology(Long id) {
 
-        Technology technology = technologyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Technology not found"));
+		Technology technology = technologyRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Technology not found"));
 
-        technologyRepository.delete(technology);
-    }
+		technologyRepository.delete(technology);
+	}
 
-    private TechnologyResponse mapToResponse(Technology technology) {
-        TechnologyResponse response = new TechnologyResponse();
-        response.setId(technology.getId());
-        response.setName(technology.getName());
-        response.setTechnologyType(technology.getTechnologyType());
-        return response;
-    }
+	private TechnologyResponse mapToResponse(Technology technology) {
+		TechnologyResponse response = new TechnologyResponse();
+		response.setId(technology.getId());
+		response.setName(technology.getName());
+		response.setTechnologyType(technology.getTechnologyType());
+		return response;
+	}
 }

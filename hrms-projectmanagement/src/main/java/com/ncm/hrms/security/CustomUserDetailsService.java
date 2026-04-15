@@ -13,19 +13,15 @@ import com.ncm.hrms.repository.EmployeeRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) {
-        Employee emp = employeeRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("Employee not found"));
+	@Override
+	public UserDetails loadUserByUsername(String email) {
+		Employee emp = employeeRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("Employee not found"));
 
-        return User.builder()
-            .username(emp.getEmail())
-            .password(emp.getPassword())
-            .authorities(  emp.getRole().name())
-            .build();
-    }
+		return User.builder().username(emp.getEmail()).password(emp.getPassword()).authorities(emp.getRole().name())
+				.build();
+	}
 }
-

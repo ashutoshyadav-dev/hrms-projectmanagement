@@ -11,31 +11,31 @@ import com.ncm.hrms.enums.EmpStatus;
 
 public class EmployeeRequest {
 
-    private String name;
-    private String email;
-    private String password;
-    private String phoneNumber;
-    private String education;
+	private String name;
+	private String email;
+	private String password;
+	private String phoneNumber;
+	private String education;
 
-    private Long designationId;
+	private Long designationId;
 
-    private LocalDate hireDate;
-    private LocalDate dateOfBirth;
+	private LocalDate hireDate;
+	private LocalDate dateOfBirth;
 
-    private AddressDto currentAddress;
-    private AddressDto permanentAddress;
+	private AddressDto currentAddress;
+	private AddressDto permanentAddress;
 
-    private boolean sameAsPermanent;
+	private boolean sameAsPermanent;
 
-    private EmpStatus status;
+	private EmpStatus status;
 
-    private List<EmployeeTechnologyRequest> technologies;
-    
-    private List<EmployeeAssignment> assignments;
-    
-    private List<LeaveRequest> leaveRequests ;
-    
-    private Long shiftId;
+	private List<EmployeeTechnologyRequest> technologies;
+
+	private List<EmployeeAssignment> assignments;
+
+	private List<LeaveRequest> leaveRequests;
+
+	private Long shiftId;
 
 	public String getName() {
 		return name;
@@ -93,7 +93,6 @@ public class EmployeeRequest {
 		this.hireDate = hireDate;
 	}
 
-	
 	public AddressDto getCurrentAddress() {
 		return currentAddress;
 	}
@@ -166,9 +165,4 @@ public class EmployeeRequest {
 		this.shiftId = shiftId;
 	}
 
-	
-    
-        
-
-    
 }

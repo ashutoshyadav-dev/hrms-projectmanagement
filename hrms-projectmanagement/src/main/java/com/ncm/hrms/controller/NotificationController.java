@@ -19,34 +19,32 @@ import com.ncm.hrms.repository.NotificationRepository;
 @RequestMapping("/notifications")
 public class NotificationController {
 
-    @Autowired
-    private NotificationRepository repo;
-    
-    @Autowired
-    private EmployeeRepository employeeRepository;
-    
-    @GetMapping
-    public List<Notification> getMyNotifications(Authentication auth) {
+	@Autowired
+	private NotificationRepository repo;
 
-        String email = auth.getName(); 
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
-        Employee emp = employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+	@GetMapping
+	public List<Notification> getMyNotifications(Authentication auth) {
 
-        return repo.findByUserIdOrderByCreatedAtDesc(emp.getId());
-    }
-    
-    @PutMapping("/mark-read/{id}")
-    public void markAsRead(@PathVariable Long id) {
-        Notification n = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not found"));
+		String email = auth.getName();
 
-        n.setRead(true);
-        repo.save(n);
-    }
+		Employee emp = employeeRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-    @GetMapping("/unread-count/{userId}")
-    public long getUnreadCount(@PathVariable Long userId) {
-        return repo.countByUserIdAndIsReadFalse(userId);
-    }
+		return repo.findByUserIdOrderByCreatedAtDesc(emp.getId());
+	}
+
+	@PutMapping("/mark-read/{id}")
+	public void markAsRead(@PathVariable Long id) {
+		Notification n = repo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+
+		n.setRead(true);
+		repo.save(n);
+	}
+
+	@GetMapping("/unread-count/{userId}")
+	public long getUnreadCount(@PathVariable Long userId) {
+		return repo.countByUserIdAndIsReadFalse(userId);
+	}
 }

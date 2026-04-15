@@ -13,70 +13,71 @@ import com.ncm.hrms.repository.AllowedIpRepository;
 @Service
 public class AllowedIpService {
 
-    private final AllowedIpRepository allowedIpRepo;
+	private final AllowedIpRepository allowedIpRepo;
 
-    public AllowedIpService(AllowedIpRepository allowedIpRepo) {
-        this.allowedIpRepo = allowedIpRepo;
-    }
+	public AllowedIpService(AllowedIpRepository allowedIpRepo) {
+		this.allowedIpRepo = allowedIpRepo;
+	}
 
-    
-    public AllowedIpDto addAllowedIp(AllowedIpDto dto) {
+	public AllowedIpDto addAllowedIp(AllowedIpDto dto) {
 
-        AllowedIp savedIp = allowedIpRepo.save(dtoTOEntity(dto));
+		AllowedIp savedIp = allowedIpRepo.save(dtoTOEntity(dto));
 
-        return entityTODto(savedIp);
-    }
+		return entityTODto(savedIp);
+	}
 
-    
-    public void removeAllowedIp(Long id) {
+	public void removeAllowedIp(Long id) {
 
-        AllowedIp ip = allowedIpRepo.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("IP not found"));
+		AllowedIp ip = allowedIpRepo.findById(id).orElseThrow(() -> new RuntimeException("IP not found"));
 
-        allowedIpRepo.delete(ip);
-    }
+		allowedIpRepo.delete(ip);
+	}
 
-  
-    public List<AllowedIpDto> getAllAllowedIp() {
+	public List<AllowedIpDto> getAllAllowedIp() {
 
-        List<AllowedIp> ips = allowedIpRepo.findAll();
+		List<AllowedIp> ips = allowedIpRepo.findAll();
 
-        return ips.stream()
-                .map(this::entityTODto)
-                .collect(Collectors.toList());
-    }
+		return ips.stream().map(this::entityTODto).collect(Collectors.toList());
+	}
 
-    
-    public AllowedIp validateIp(String ip) {
+	public AllowedIpDto updateAllowedIp(Long id, AllowedIpDto dto) {
 
-        return allowedIpRepo
-                .findByIpAddressAndActiveTrue(ip)
-                .orElseThrow(() ->
-                        new IpNotAllowedException("Access denied. IP not allowed: " + ip));
-    }
+		AllowedIp existingIp = allowedIpRepo.findById(id).orElseThrow(() -> new RuntimeException("IP not found"));
 
-    
-    public AllowedIpDto entityTODto(AllowedIp ip) {
+		existingIp.setIpAddress(dto.getIpAddress());
+		existingIp.setDescription(dto.getDescription());
+		existingIp.setActive(dto.getActive());
 
-        AllowedIpDto dto = new AllowedIpDto();
+		AllowedIp updatedIp = allowedIpRepo.save(existingIp);
 
-        dto.setIpAddress(ip.getIpAddress());
-        dto.setDescription(ip.getDescription());
-        dto.setActive(ip.getActive());
+		return entityTODto(updatedIp);
+	}
 
-        return dto;
-    }
+	public AllowedIp validateIp(String ip) {
 
-   
-    public AllowedIp dtoTOEntity(AllowedIpDto dto) {
+		return allowedIpRepo.findByIpAddressAndActiveTrue(ip)
+				.orElseThrow(() -> new IpNotAllowedException("Access denied. IP not allowed: " + ip));
+	}
 
-        AllowedIp allowedIp = new AllowedIp();
+	public AllowedIpDto entityTODto(AllowedIp ip) {
 
-        allowedIp.setIpAddress(dto.getIpAddress());
-        allowedIp.setDescription(dto.getDescription());
-        allowedIp.setActive(dto.getActive());
+		AllowedIpDto dto = new AllowedIpDto();
 
-        return allowedIp;
-    }
+		dto.setIpAddress(ip.getIpAddress());
+		dto.setDescription(ip.getDescription());
+		dto.setActive(ip.getActive());
+		dto.setId(ip.getId());
+		return dto;
+	}
+
+	public AllowedIp dtoTOEntity(AllowedIpDto dto) {
+
+		AllowedIp allowedIp = new AllowedIp();
+
+		allowedIp.setIpAddress(dto.getIpAddress());
+		allowedIp.setDescription(dto.getDescription());
+		allowedIp.setActive(dto.getActive());
+
+		return allowedIp;
+	}
 }

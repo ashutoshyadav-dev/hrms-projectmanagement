@@ -21,16 +21,16 @@ import com.ncm.hrms.service.AdminService;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private AdminService adminService;
+	@Autowired
+	private AdminService adminService;
 
 //    @GetMapping("/employees")
 //    public List<EmployeeResponse> getAllEmployees() {
 //        return adminService.getAllEmployees();
 //    }
-    
-     //Basic pagination without filter
-    
+
+	// Basic pagination without filter
+
 //    @GetMapping("/employees")
 //    public Page<EmployeeResponse> getAllEmployees(
 //            @RequestParam(defaultValue = "0") int page,
@@ -46,48 +46,39 @@ public class AdminController {
 //
 //        return adminService.getAllEmployees(pageable);
 //    }
-    
-    
-    //Pagination with filter
-    @GetMapping("/employees")
-    public Page<EmployeeResponse> getAllEmployees(
 
-            @RequestParam(required = false) String search,
+	// Pagination with filter
+	@GetMapping("/employees")
+	public Page<EmployeeResponse> getAllEmployees(
 
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction
-    ) {
+			@RequestParam(required = false) String search,
 
-        Sort sort = direction.equalsIgnoreCase("asc")
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+			@RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "asc") String direction) {
 
-        Pageable pageable = PageRequest.of(page, size, sort);
+		Sort sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-        return adminService.getAllEmployees(search, pageable);
-    }
-    
-    //_________________________________________________________________________________________________________
-    
-    @GetMapping("/empById/{id}")
-    public ResponseEntity<EmployeeResponse> getEmployeeById(@PathVariable Long id){
-    	return ResponseEntity.ok(adminService.getEmployeeById(id));
-    }
-    
-    @PutMapping("/updateEmp/{id}")
-    public EmployeeResponse updateEmployee(
-            @PathVariable Long id,
-            @RequestBody EmployeeRequest request) {
-        return adminService.updateEmployee(id, request);
-    }
-    
-    
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
-    @GetMapping("/employees/dropdown")
-    public List<EmployeeDropdownDto> getEmployeeDropdown() {
-        return adminService.getEmployeeDropdown();
-    }
+		Pageable pageable = PageRequest.of(page, size, sort);
+
+		return adminService.getAllEmployees(search, pageable);
+	}
+
+	// _________________________________________________________________________________________________________
+
+	@GetMapping("/empById/{id}")
+	public ResponseEntity<EmployeeResponse> getEmployeeById(@PathVariable Long id) {
+		return ResponseEntity.ok(adminService.getEmployeeById(id));
+	}
+
+	@PutMapping("/updateEmp/{id}")
+	public EmployeeResponse updateEmployee(@PathVariable Long id, @RequestBody EmployeeRequest request) {
+		return adminService.updateEmployee(id, request);
+	}
+
+	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	@GetMapping("/employees/dropdown")
+	public List<EmployeeDropdownDto> getEmployeeDropdown() {
+		return adminService.getEmployeeDropdown();
+	}
 }

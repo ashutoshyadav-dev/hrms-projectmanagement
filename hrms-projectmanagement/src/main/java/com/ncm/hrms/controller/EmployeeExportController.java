@@ -15,44 +15,42 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/api/export")
 public class EmployeeExportController {
 
-    private final EmployeeService employeeService;
-    private final EmployeeExportService exportService;
+	private final EmployeeService employeeService;
+	private final EmployeeExportService exportService;
 
-    public EmployeeExportController(EmployeeService employeeService,
-                            EmployeeExportService exportService) {
-        this.employeeService = employeeService;
-        this.exportService = exportService;
-    }
+	public EmployeeExportController(EmployeeService employeeService, EmployeeExportService exportService) {
+		this.employeeService = employeeService;
+		this.exportService = exportService;
+	}
 
-    @GetMapping
-    public void exportEmployees(
-            @RequestParam(defaultValue = "csv") String format,
-            HttpServletResponse response) throws IOException {
+	@GetMapping
+	public void exportEmployees(@RequestParam(defaultValue = "csv") String format, HttpServletResponse response)
+			throws IOException {
 
-        List<EmployeeResponse> employees = employeeService.getAllEmployees();
+		List<EmployeeResponse> employees = employeeService.getAllEmployees();
 
-        switch (format.toLowerCase()) {
+		switch (format.toLowerCase()) {
 
-            case "csv":
-                response.setContentType("text/csv");
-                response.setHeader("Content-Disposition", "attachment; filename=employees.csv");
-                exportService.exportToCSV(employees, response.getWriter());
-                break;
+		case "csv":
+			response.setContentType("text/csv");
+			response.setHeader("Content-Disposition", "attachment; filename=employees.csv");
+			exportService.exportToCSV(employees, response.getWriter());
+			break;
 
-            case "excel":
-                response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                response.setHeader("Content-Disposition", "attachment; filename=employees.xlsx");
-                exportService.exportToExcel(employees, response);
-                break;
+		case "excel":
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			response.setHeader("Content-Disposition", "attachment; filename=employees.xlsx");
+			exportService.exportToExcel(employees, response);
+			break;
 
-            case "pdf":
-                response.setContentType("application/pdf");
-                response.setHeader("Content-Disposition", "attachment; filename=employees.pdf");
-                exportService.exportToPDF(employees, response);
-                break;
+		case "pdf":
+			response.setContentType("application/pdf");
+			response.setHeader("Content-Disposition", "attachment; filename=employees.pdf");
+			exportService.exportToPDF(employees, response);
+			break;
 
-            default:
-                throw new IllegalArgumentException("Invalid format");
-        }
-    }
+		default:
+			throw new IllegalArgumentException("Invalid format");
+		}
+	}
 }

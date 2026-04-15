@@ -10,17 +10,12 @@ import org.springframework.stereotype.Repository;
 import com.ncm.hrms.entity.AttendanceLog;
 
 @Repository
-public interface AttendanceLogRepository 
-        extends JpaRepository<AttendanceLog, Long> {
+public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Long> {
 
-    @Query("""
-           SELECT l FROM AttendanceLog l
-           WHERE l.employee.id = :employeeId
-           AND l.timestamp BETWEEN :startOfDay AND :endOfDay
-           """)
-    List<AttendanceLog> findTodayLogsByEmployee(
-            Long employeeId,
-            LocalDateTime startOfDay,
-            LocalDateTime endOfDay
-    );
+	@Query("""
+			SELECT l FROM AttendanceLog l
+			WHERE l.employee.id = :employeeId
+			AND l.timestamp BETWEEN :startOfDay AND :endOfDay
+			""")
+	List<AttendanceLog> findTodayLogsByEmployee(Long employeeId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

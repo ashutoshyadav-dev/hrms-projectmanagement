@@ -11,22 +11,17 @@ import com.ncm.hrms.entity.Employee;
 import com.ncm.hrms.entity.LeaveRequest;
 import com.ncm.hrms.enums.LeaveStatus;
 
-
 @Repository
 public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long> {
 
-List<LeaveRequest> findByEmployee_Id(Long employeeId);
+	List<LeaveRequest> findByEmployee_Id(Long employeeId);
 
+	Optional<Employee> findByEmployee(Employee employee);
 
-Optional<Employee> findByEmployee(Employee employee);
+	Optional<Employee> findByLeaveStatus(LeaveStatus pending);
 
-Optional<Employee> findByLeaveStatus(LeaveStatus pending);
+	List<LeaveRequest> findByEmployeeAndLeaveStatus(Employee employee, LeaveStatus status);
 
-
-List<LeaveRequest> findByEmployeeAndLeaveStatus(Employee employee, LeaveStatus status);
-
-
-LeaveRequest findByEmployee_IdAndAppliedDate(Long employeeId , LocalDate appliedDate);
+	LeaveRequest findByEmployee_IdAndAppliedDate(Long employeeId, LocalDate appliedDate);
 
 }
-

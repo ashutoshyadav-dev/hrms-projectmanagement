@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.ncm.hrms.entity.Document;
 
 @Repository
-public interface DocumentRepository extends JpaRepository<Document, Long>{
+public interface DocumentRepository extends JpaRepository<Document, Long> {
 
-    List<Document> findByEmployeeId(Long employeeId);
+	List<Document> findByEmployeeId(Long employeeId);
 
 }

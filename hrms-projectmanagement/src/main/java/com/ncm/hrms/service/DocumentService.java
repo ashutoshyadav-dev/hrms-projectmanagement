@@ -30,151 +30,133 @@ import com.ncm.hrms.repository.EmployeeRepository;
 @Service
 public class DocumentService {
 
-    private DocumentRepository docRepo;
-    private EmployeeRepository empRepo;
+	private DocumentRepository docRepo;
+	private EmployeeRepository empRepo;
 
-    public DocumentService(DocumentRepository docRepo, EmployeeRepository empRepo) {
-        this.docRepo = docRepo;
-        this.empRepo = empRepo;
-    }
+	public DocumentService(DocumentRepository docRepo, EmployeeRepository empRepo) {
+		this.docRepo = docRepo;
+		this.empRepo = empRepo;
+	}
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+	@Value("${file.upload-dir}")
+	private String uploadDir;
 
-    
+	public DocumentDto uploadFile(DocumentDto docDto, MultipartFile file) throws IOException {
 
-    public DocumentDto uploadFile(DocumentDto docDto, MultipartFile file) throws IOException {
+		Files.createDirectories(Paths.get(uploadDir));
 
-        Files.createDirectories(Paths.get(uploadDir));
+		String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+		Path filePath = Paths.get(uploadDir).resolve(fileName);
 
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir).resolve(fileName);
+		Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+		String dbPath = uploadDir + "/" + fileName;
 
-        String dbPath = uploadDir + "/" + fileName;
+		Employee emp = empRepo.findById(docDto.getEmployeeId())
+				.orElseThrow(() -> new RuntimeException("Employee not found with id: " + docDto.getEmployeeId()));
 
-        Employee emp = empRepo.findById(docDto.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + docDto.getEmployeeId()));
-        
-        if(emp.getStatus() != EmpStatus.ACTIVE) {
-        	throw new IllegalArgumentException("Employee is not active ");
-        }
+		if (emp.getStatus() != EmpStatus.ACTIVE) {
+			throw new IllegalArgumentException("Employee is not active ");
+		}
 
-        Document doc = dtoToDoc(docDto);
+		Document doc = dtoToDoc(docDto);
 
-        doc.setEmployee(emp);
-        doc.setPath(dbPath);
-        doc.setUploadTime(new Timestamp(System.currentTimeMillis()));
+		doc.setEmployee(emp);
+		doc.setPath(dbPath);
+		doc.setUploadTime(new Timestamp(System.currentTimeMillis()));
 
-        docRepo.save(doc);
+		docRepo.save(doc);
 
-        return docToDTO(doc);
-    }
+		return docToDTO(doc);
+	}
 
-    public List<DocumentDto> getDocumentsByEmployeeId(Long employeeId) {
-    	
-    	Employee emp = empRepo.findById(employeeId)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + employeeId));
-        
-        if(emp.getStatus() != EmpStatus.ACTIVE) {
-        	throw new IllegalArgumentException("Employee is not active ");
-        }
+	public List<DocumentDto> getDocumentsByEmployeeId(Long employeeId) {
 
-        List<Document> docs = docRepo.findByEmployeeId(employeeId);
+		Employee emp = empRepo.findById(employeeId)
+				.orElseThrow(() -> new RuntimeException("Employee not found with id: " + employeeId));
 
-        return docs.stream()
-                   .map(this::docToDTO)
-                   .toList();
-    }
+		if (emp.getStatus() != EmpStatus.ACTIVE) {
+			throw new IllegalArgumentException("Employee is not active ");
+		}
 
-    public DocumentDto getDocumentById(Long id) {
+		List<Document> docs = docRepo.findByEmployeeId(employeeId);
 
-        Document doc = docRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+		return docs.stream().map(this::docToDTO).toList();
+	}
 
-        return docToDTO(doc);
-    }
+	public DocumentDto getDocumentById(Long id) {
 
-    
-    public List<DocumentDto> getAllDocuments() {
+		Document doc = docRepo.findById(id).orElseThrow(() -> new RuntimeException("Document not found with id " + id));
 
-        return docRepo.findAll()
-                .stream()
-                .map(this::docToDTO)
-                .collect(Collectors.toList());
-    }
+		return docToDTO(doc);
+	}
 
-   
+	public List<DocumentDto> getAllDocuments() {
 
-    public void deleteDocumentById(Long id) throws IOException {
+		return docRepo.findAll().stream().map(this::docToDTO).collect(Collectors.toList());
+	}
 
-        Document doc = docRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+	public void deleteDocumentById(Long id) throws IOException {
 
-        Path path = Paths.get(doc.getPath());
+		Document doc = docRepo.findById(id).orElseThrow(() -> new RuntimeException("Document not found with id " + id));
 
-        Files.deleteIfExists(path);
+		Path path = Paths.get(doc.getPath());
 
-        docRepo.deleteById(id);
-    }
+		Files.deleteIfExists(path);
 
-    
-    public ResponseEntity<Resource> getFile(Long id, boolean download) throws IOException {
+		docRepo.deleteById(id);
+	}
 
-        Document doc = docRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+	public ResponseEntity<Resource> getFile(Long id, boolean download) throws IOException {
 
-        Path path = Paths.get(doc.getPath());
+		Document doc = docRepo.findById(id).orElseThrow(() -> new RuntimeException("Document not found with id " + id));
 
-        if (!Files.exists(path)) {
-            throw new RuntimeException("File not found on server");
-        }
+		Path path = Paths.get(doc.getPath());
 
-        Resource resource = new UrlResource(path.toUri());
+		if (!Files.exists(path)) {
+			throw new RuntimeException("File not found on server");
+		}
 
-        String contentType = Files.probeContentType(path);
-        if (contentType == null) {
-            contentType = "application/octet-stream";
-        }
+		Resource resource = new UrlResource(path.toUri());
 
-        String headerValue = download
-                ? "attachment; filename=\"" + doc.getDocName() + "\""
-                : "inline; filename=\"" + doc.getDocName() + "\"";
+		String contentType = Files.probeContentType(path);
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-                .body(resource);
-    }
-   
-    public Document dtoToDoc(DocumentDto docDto) {
+		String headerValue = download ? "attachment; filename=\"" + doc.getDocName() + "\""
+				: "inline; filename=\"" + doc.getDocName() + "\"";
 
-        Document doc = new Document();
-        doc.setDocName(docDto.getDocName());
-        doc.setDocType(docDto.getDocType());
-        doc.setContentType(ContentType.valueOf(docDto.getContentType()));
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+				.header(HttpHeaders.CONTENT_DISPOSITION, headerValue).body(resource);
+	}
 
-        return doc;
-    }
+	public Document dtoToDoc(DocumentDto docDto) {
 
+		Document doc = new Document();
+		doc.setDocName(docDto.getDocName());
+		doc.setDocType(docDto.getDocType());
+		doc.setContentType(ContentType.valueOf(docDto.getContentType()));
 
-    public DocumentDto docToDTO(Document doc) {
+		return doc;
+	}
 
-        DocumentDto dto = new DocumentDto();
+	public DocumentDto docToDTO(Document doc) {
 
-        dto.setId(doc.getId());
-        dto.setDocName(doc.getDocName());
-        dto.setDocType(doc.getDocType());
-        dto.setContentType(doc.getContentType().toString());
-        dto.setPath(doc.getPath());
+		DocumentDto dto = new DocumentDto();
 
-        if (doc.getEmployee() != null) {
-            dto.setEmployeeId(doc.getEmployee().getId());
-            dto.setEmployeeName(doc.getEmployee().getName());
-            dto.setDesignationTitle(doc.getEmployee().getDesignation().getTitle());
-        }
+		dto.setId(doc.getId());
+		dto.setDocName(doc.getDocName());
+		dto.setDocType(doc.getDocType());
+		dto.setContentType(doc.getContentType().toString());
+		dto.setPath(doc.getPath());
 
-        return dto;
-    }
+		if (doc.getEmployee() != null) {
+			dto.setEmployeeId(doc.getEmployee().getId());
+			dto.setEmployeeName(doc.getEmployee().getName());
+			dto.setDesignationTitle(doc.getEmployee().getDesignation().getTitle());
+		}
+
+		return dto;
+	}
 }

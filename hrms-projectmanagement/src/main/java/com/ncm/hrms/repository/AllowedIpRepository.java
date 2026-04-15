@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.ncm.hrms.entity.AllowedIp;
 
 @Repository
-public interface AllowedIpRepository extends JpaRepository<AllowedIp, Long>{
-   
+public interface AllowedIpRepository extends JpaRepository<AllowedIp, Long> {
 
-    Optional<AllowedIp> findByIpAddressAndActiveTrue(String ipAddress);
+	Optional<AllowedIp> findByIpAddressAndActiveTrue(String ipAddress);
 }
